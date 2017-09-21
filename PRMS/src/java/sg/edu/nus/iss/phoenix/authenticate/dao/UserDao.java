@@ -30,7 +30,7 @@ public interface UserDao {
      * @throws sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException 
      * @throws java.sql.SQLException 
 	 */
-	public abstract User getObject(String id)
+	public abstract User getObject(String name, String password)
 			throws NotFoundException, SQLException;
 
 	/**
@@ -159,6 +159,6 @@ public interface UserDao {
 	public abstract List<User> searchMatching(User valueObject)
 			throws SQLException;
 
-	public abstract User searchMatching(String uid)
+	public abstract User searchMatching(String name, String password)
 			throws SQLException;
 }
