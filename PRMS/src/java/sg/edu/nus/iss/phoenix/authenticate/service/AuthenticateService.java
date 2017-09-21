@@ -55,7 +55,7 @@ public class AuthenticateService {
 	public User validateUserIdPassword(final User toAuth) {
 		User found = null;
 		try {
-			found = udao.searchMatching(toAuth.getId());
+			found = udao.searchMatching(toAuth.getName(), toAuth.getPassword());
 		} catch (SQLException ex) {
 			logger.log(Level.SEVERE, "user searchMatching", ex);
 			return (null);
