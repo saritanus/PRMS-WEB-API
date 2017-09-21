@@ -25,7 +25,7 @@ public class LoginCmd implements Perform {
     public String perform(String path, HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         AuthenticateDelegate ad = new AuthenticateDelegate();
         User user = new User();
-        user.setId(req.getParameter("id"));
+        user.setName(req.getParameter("id"));
         user.setPassword(req.getParameter("password"));
         user = ad.validateUserIdPassword(user);
         if (null != user) {
