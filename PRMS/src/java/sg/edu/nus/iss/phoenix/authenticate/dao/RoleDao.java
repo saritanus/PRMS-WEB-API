@@ -43,7 +43,7 @@ public interface RoleDao {
 	 */
 	public abstract void load(Role valueObject)
 			throws NotFoundException, SQLException;
-        public abstract List<Role> loadUerRole(User valueObject) 
+        public abstract List<Role> loadUserRole(User valueObject) 
                 throws NotFoundException, SQLException;
 
 	/**

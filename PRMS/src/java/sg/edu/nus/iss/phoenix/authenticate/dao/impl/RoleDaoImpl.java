@@ -90,13 +90,12 @@ public class RoleDaoImpl implements RoleDao {
 		}
 	}
         @Override
-    public List<Role> loadUerRole(User valueObject) throws NotFoundException, SQLException {
+    public List<Role> loadUserRole(User valueObject) throws NotFoundException, SQLException {
        
        
                 String sql = "SELECT role.roleId,role,accessPrivilege FROM `user-role` ur, role where ur.userId="+valueObject.getUserId()+" and ur.roleId=role.roleId";
 		connection = openConnection();
-                List<Role> searchResults = listQuery(this.connection
-				.prepareStatement(sql));
+                List<Role> searchResults = listQuery(this.connection.prepareStatement(sql));
 
 		return searchResults;
 	    }

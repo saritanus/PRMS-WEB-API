@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import sg.edu.nus.iss.phoenix.authenticate.dao.RoleDao;
-
 import sg.edu.nus.iss.phoenix.authenticate.dao.UserDao;
 import sg.edu.nus.iss.phoenix.core.dao.DAOFactoryImpl;
 import sg.edu.nus.iss.phoenix.user.entity.Role;
@@ -388,7 +387,7 @@ public class UserDaoImpl implements UserDao {
                 
                 DAOFactoryImpl factory = new DAOFactoryImpl();
                 RoleDao roleDAO = factory.getRoleDAO();
-                List roles =roleDAO.loadUerRole(valueObject);
+                List roles =roleDAO.loadUserRole(valueObject);
                 valueObject.setRoles(roles);
 
             } else {

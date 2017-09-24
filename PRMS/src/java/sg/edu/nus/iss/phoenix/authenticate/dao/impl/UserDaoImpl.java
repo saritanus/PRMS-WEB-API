@@ -103,7 +103,6 @@ public class UserDaoImpl implements UserDao {
         String sql = "SELECT * FROM user ORDER BY id ASC ";
         List<User> searchResults = listQuery(this.connection
                 .prepareStatement(sql));
-
         return searchResults;
     }
 
@@ -388,7 +387,7 @@ public class UserDaoImpl implements UserDao {
                 
                 DAOFactoryImpl factory = new DAOFactoryImpl();
                 RoleDao roleDAO = factory.getRoleDAO();
-                List roles =roleDAO.loadUerRole(valueObject);
+                List roles =roleDAO.loadUserRole(valueObject);
                 valueObject.setRoles(roles);
 
             } else {
