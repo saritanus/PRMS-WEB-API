@@ -1,6 +1,5 @@
 package sg.edu.nus.iss.phoenix.user.dao;
 
-import sg.edu.nus.iss.phoenix.authenticate.dao.*;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -8,7 +7,7 @@ import sg.edu.nus.iss.phoenix.user.entity.Role;
 import sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException;
 import sg.edu.nus.iss.phoenix.user.entity.User;
 
-public interface RoleDao {
+public interface RoleDAO {
 
 	/**
 	 * createValueObject-method. This method is used when the Dao class needs
@@ -44,7 +43,7 @@ public interface RoleDao {
 	 */
 	public abstract void load(Role valueObject)
 			throws NotFoundException, SQLException;
-        public abstract List<Role> loadUerRole(User valueObject) 
+        public abstract List<Role> loadUserRole(User valueObject) 
                 throws NotFoundException, SQLException;
 
 	/**

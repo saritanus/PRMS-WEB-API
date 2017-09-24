@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import sg.edu.nus.iss.phoenix.user.dao.RoleDao;
+import sg.edu.nus.iss.phoenix.user.dao.RoleDAO;
 import sg.edu.nus.iss.phoenix.user.entity.Role;
 import sg.edu.nus.iss.phoenix.core.dao.DBConstants;
 import sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException;
@@ -20,13 +20,13 @@ import sg.edu.nus.iss.phoenix.user.entity.User;
  * Role Data Access Object (DAO). This class contains all database handling that
  * is needed to permanently store and retrieve Role object instances.
  */
-public class RoleDaoImpl implements RoleDao {
+public class RoleDAOImpl implements RoleDAO {
 
-	private static final Logger logger = Logger.getLogger(RoleDaoImpl.class.getName());
+	private static final Logger logger = Logger.getLogger(RoleDAOImpl.class.getName());
 
 	Connection connection;
 
-	public RoleDaoImpl() {
+	public RoleDAOImpl() {
 		super();
 		// TODO Auto-generated constructor stub
 		connection = openConnection();
@@ -89,9 +89,18 @@ public class RoleDaoImpl implements RoleDao {
 			closeConnection();
 		}
 	}
+        @Override
+    public List<Role> loadUserRole(User valueObject) throws NotFoundException, SQLException {
+       
+       
+                String sql = "SELECT role.roleId,role,accessPrivilege FROM `user-role` ur, role where ur.userId="+valueObject.getUserId()+" and ur.roleId=role.roleId";
+		connection = openConnection();
+                List<Role> searchResults = listQuery(this.connection.prepareStatement(sql));
 
-	/*
-	 * (non-Javadoc)
+		return searchResults;
+	    }
+
+	/*	 * (non-Javadoc)
 	 * 
 	 * @see
 	 * sg.edu.nus.iss.phoenix.authenticate.dao.impl.RoleDao#loadAll(java.sql
@@ -402,7 +411,7 @@ public class RoleDaoImpl implements RoleDao {
 
 			while (result.next()) {
 				Role temp = createValueObject();
-
+                                temp.setRoleId(result.getInt("roleId"));
 				temp.setRole(result.getString("role"));
 				temp.setAccessPrivilege(result.getString("accessPrivilege"));
 
@@ -443,9 +452,7 @@ public class RoleDaoImpl implements RoleDao {
 		}
 	}
 
-    @Override
-    public List<Role> loadUerRole(User valueObject) throws NotFoundException, SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    
 
+    
 }

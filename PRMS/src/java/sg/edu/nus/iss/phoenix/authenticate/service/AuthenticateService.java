@@ -6,8 +6,8 @@ import java.util.List;
 
 import java.util.logging.*;
 
-import sg.edu.nus.iss.phoenix.authenticate.dao.RoleDao;
-import sg.edu.nus.iss.phoenix.authenticate.dao.UserDao;
+import sg.edu.nus.iss.phoenix.user.dao.RoleDAO;
+import sg.edu.nus.iss.phoenix.user.dao.UserDAO;
 import sg.edu.nus.iss.phoenix.user.entity.Role;
 import sg.edu.nus.iss.phoenix.user.entity.User;
 import sg.edu.nus.iss.phoenix.core.dao.DAOFactoryImpl;
@@ -19,8 +19,8 @@ public class AuthenticateService {
 			Logger.getLogger(AuthenticateService.class.getName());
 
 	DAOFactoryImpl factory;
-	UserDao udao;
-	RoleDao rdao;
+	UserDAO udao;
+	RoleDAO rdao;
 
 	public AuthenticateService() {
 		super();

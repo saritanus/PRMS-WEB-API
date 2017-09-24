@@ -10,8 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sg.edu.nus.iss.phoenix.authenticate.dao.RoleDao;
-import sg.edu.nus.iss.phoenix.authenticate.dao.UserDao;
+import sg.edu.nus.iss.phoenix.user.dao.RoleDAO;
+import sg.edu.nus.iss.phoenix.user.dao.UserDAO;
 import sg.edu.nus.iss.phoenix.core.dao.DAOFactoryImpl;
 import sg.edu.nus.iss.phoenix.user.entity.Role;
 import sg.edu.nus.iss.phoenix.user.entity.User;
@@ -21,14 +21,14 @@ import sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException;
  * User Data Access Object (DAO). This class contains all database handling that
  * is needed to permanently store and retrieve User object instances.
  */
-public class UserDaoImpl implements UserDao {
+public class UserDAOImpl implements UserDAO {
 
     private static final String DELIMITER = ":";
-    private static final Logger logger = Logger.getLogger(UserDaoImpl.class.getName());
+    private static final Logger logger = Logger.getLogger(UserDAOImpl.class.getName());
 
     Connection connection;
 
-    public UserDaoImpl() {
+    public UserDAOImpl() {
         super();
         // TODO Auto-generated constructor stub
         connection = openConnection();
@@ -102,7 +102,6 @@ public class UserDaoImpl implements UserDao {
         String sql = "SELECT * FROM user ORDER BY id ASC ";
         List<User> searchResults = listQuery(this.connection
                 .prepareStatement(sql));
-
         return searchResults;
     }
 
@@ -386,7 +385,7 @@ public class UserDaoImpl implements UserDao {
                 valueObject.setName(result.getString("name"));
                 
                 DAOFactoryImpl factory = new DAOFactoryImpl();
-                RoleDao roleDAO = factory.getRoleDAO();
+                RoleDAO roleDAO = factory.getRoleDAO();
                 List roles =roleDAO.loadUserRole(valueObject);
                 valueObject.setRoles(roles);
 

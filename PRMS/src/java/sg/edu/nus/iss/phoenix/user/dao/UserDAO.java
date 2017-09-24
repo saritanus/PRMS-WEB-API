@@ -1,19 +1,19 @@
 package sg.edu.nus.iss.phoenix.user.dao;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
-
-import sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException;
 import sg.edu.nus.iss.phoenix.user.entity.User;
+import sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException;
 
 public interface UserDAO {
 
 	/**
-	 * createValueObject-method. This method is used when the DAO class needs to
+	 * createValueObject-method. This method is used when the Dao class needs to
 	 * create new value object instance. The reason why this method exists is
 	 * that sometimes the programmer may want to extend also the valueObject and
-	 * then this method can be over-ridden to return extended valueObject.
+	 * then this method can be overrided to return extended valueObject. NOTE:
+	 * If you extend the valueObject class, make sure to override the clone()
+	 * method in it!
      * @return 
 	 */
 	public abstract User createValueObject();
@@ -24,12 +24,12 @@ public interface UserDAO {
 	 * convenience method for the real load-method which accepts the valueObject
 	 * as a parameter. Returned valueObject will be created using the
 	 * createValueObject() method.
-     * @param name
+     * @param id
      * @return 
      * @throws sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException 
      * @throws java.sql.SQLException 
 	 */
-	public abstract User getObject(String name)
+	public abstract User getObject(String name, String password)
 			throws NotFoundException, SQLException;
 
 	/**
@@ -75,7 +75,8 @@ public interface UserDAO {
 	 *            must be set for this to work properly.
      * @throws java.sql.SQLException
 	 */
-	public abstract void create(User valueObject) throws SQLException;
+	public abstract void create(User valueObject)
+			throws SQLException;
 
 	/**
 	 * save-method. This method will save the current state of valueObject to
@@ -123,11 +124,9 @@ public interface UserDAO {
 	 * implementation of this method should be different with different DB
 	 * backends.)
 	 * 
-	 * @param conn
-	 *            This method requires working database connection.
      * @throws java.sql.SQLException
 	 */
-	public abstract void deleteAll(Connection conn) throws SQLException;
+	public abstract void deleteAll() throws SQLException;
 
 	/**
 	 * coutAll-method. This method will return the number of all rows from table
@@ -159,4 +158,6 @@ public interface UserDAO {
 	public abstract List<User> searchMatching(User valueObject)
 			throws SQLException;
 
+	public abstract User searchMatching(String name, String password)
+			throws SQLException;
 }
