@@ -3,8 +3,9 @@ package sg.edu.nus.iss.phoenix.authenticate.dao;
 import java.sql.SQLException;
 import java.util.List;
 
-import sg.edu.nus.iss.phoenix.authenticate.entity.Role;
+import sg.edu.nus.iss.phoenix.user.entity.Role;
 import sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException;
+import sg.edu.nus.iss.phoenix.user.entity.User;
 
 public interface RoleDao {
 
@@ -42,6 +43,8 @@ public interface RoleDao {
 	 */
 	public abstract void load(Role valueObject)
 			throws NotFoundException, SQLException;
+        public abstract List<Role> loadUerRole(User valueObject) 
+                throws NotFoundException, SQLException;
 
 	/**
 	 * LoadAll-method. This will read all contents from database table and
@@ -50,6 +53,8 @@ public interface RoleDao {
 	 * This should only be used when target tables have only small amounts
 	 * of data.
 	 *
+         * 
+         * 
      * @return 
      * @throws java.sql.SQLException
 	 */

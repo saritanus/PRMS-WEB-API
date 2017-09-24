@@ -22,7 +22,7 @@ public class User implements Cloneable, Serializable {
     private String emailID;
     private Date joiningDate;
     private int userId;
-    private  ArrayList<Role> listRoles = new ArrayList<Role>();
+    private  List<Role> listRoles = new ArrayList<Role>();
 
     /** 
      * Constructors. 
@@ -89,11 +89,11 @@ public class User implements Cloneable, Serializable {
     public void setJoiningDate(Date joiningDateIn) {
           this.joiningDate = joiningDateIn;
     }
-    public ArrayList<Role> getRoles()
+    public List<Role> getRoles()
     {
         return this.listRoles; 
     }
-    public void setRoles(ArrayList<Role> list)
+    public void setRoles(List<Role> list)
     {
         this.listRoles = list;
     }

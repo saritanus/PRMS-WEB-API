@@ -3,7 +3,7 @@ package sg.edu.nus.iss.phoenix.authenticate.dao;
 import java.sql.SQLException;
 import java.util.List;
 
-import sg.edu.nus.iss.phoenix.authenticate.entity.User;
+import sg.edu.nus.iss.phoenix.user.entity.User;
 import sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException;
 
 public interface UserDao {

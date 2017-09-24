@@ -10,10 +10,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import sg.edu.nus.iss.phoenix.authenticate.dao.RoleDao;
-import sg.edu.nus.iss.phoenix.authenticate.entity.Role;
+import sg.edu.nus.iss.phoenix.user.dao.RoleDao;
+import sg.edu.nus.iss.phoenix.user.entity.Role;
 import sg.edu.nus.iss.phoenix.core.dao.DBConstants;
 import sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException;
+import sg.edu.nus.iss.phoenix.user.entity.User;
 
 /**
  * Role Data Access Object (DAO). This class contains all database handling that
@@ -441,5 +442,10 @@ public class RoleDaoImpl implements RoleDao {
 		} catch (SQLException e) {
 		}
 	}
+
+    @Override
+    public List<Role> loadUerRole(User valueObject) throws NotFoundException, SQLException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }

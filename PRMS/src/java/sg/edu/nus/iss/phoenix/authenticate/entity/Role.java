@@ -20,6 +20,7 @@ public class Role implements Cloneable, Serializable {
 	 */
 	private String role;
 	private String accessPrivilege;
+        private int roleId;
 
 	/**
 	 * Constructors. The first one takes no arguments and provides the most
@@ -42,6 +43,14 @@ public class Role implements Cloneable, Serializable {
 	 * manual additions.
      * @return 
 	 */
+        public int getRoleId() {
+		return this.roleId;
+	}
+
+	public void setRoleId(int roleId) {
+		this.roleId = roleId;
+	}
+
 	public String getRole() {
 		return this.role;
 	}

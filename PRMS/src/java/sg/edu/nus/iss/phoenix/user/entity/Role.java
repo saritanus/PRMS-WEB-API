@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * Role Value Object. This class is value object representing database table
- * role This class is intended to be used together with associated Dao object.
+ * role This class is intented to be used together with associated Dao object.
  */
 
 public class Role implements Cloneable, Serializable {
@@ -18,9 +18,9 @@ public class Role implements Cloneable, Serializable {
 	 * Persistent Instance variables. This data is directly mapped to the
 	 * columns of database table.
 	 */
-        //private int roleId;
 	private String role;
 	private String accessPrivilege;
+        private int roleId;
 
 	/**
 	 * Constructors. The first one takes no arguments and provides the most
@@ -43,6 +43,14 @@ public class Role implements Cloneable, Serializable {
 	 * manual additions.
      * @return 
 	 */
+        public int getRoleId() {
+		return this.roleId;
+	}
+
+	public void setRoleId(int roleId) {
+		this.roleId = roleId;
+	}
+
 	public String getRole() {
 		return this.role;
 	}

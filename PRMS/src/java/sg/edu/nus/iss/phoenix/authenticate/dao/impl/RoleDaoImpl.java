@@ -11,9 +11,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import sg.edu.nus.iss.phoenix.authenticate.dao.RoleDao;
-import sg.edu.nus.iss.phoenix.authenticate.entity.Role;
+import sg.edu.nus.iss.phoenix.user.entity.Role;
 import sg.edu.nus.iss.phoenix.core.dao.DBConstants;
 import sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException;
+import sg.edu.nus.iss.phoenix.user.entity.User;
 
 /**
  * Role Data Access Object (DAO). This class contains all database handling that
@@ -88,9 +89,19 @@ public class RoleDaoImpl implements RoleDao {
 			closeConnection();
 		}
 	}
+        @Override
+    public List<Role> loadUerRole(User valueObject) throws NotFoundException, SQLException {
+       
+       
+                String sql = "SELECT role.roleId,role,accessPrivilege FROM `user-role` ur, role where ur.userId="+valueObject.getUserId()+" and ur.roleId=role.roleId";
+		connection = openConnection();
+                List<Role> searchResults = listQuery(this.connection
+				.prepareStatement(sql));
 
-	/*
-	 * (non-Javadoc)
+		return searchResults;
+	    }
+
+	/*	 * (non-Javadoc)
 	 * 
 	 * @see
 	 * sg.edu.nus.iss.phoenix.authenticate.dao.impl.RoleDao#loadAll(java.sql
@@ -401,7 +412,7 @@ public class RoleDaoImpl implements RoleDao {
 
 			while (result.next()) {
 				Role temp = createValueObject();
-
+                                temp.setRoleId(result.getInt("roleId"));
 				temp.setRole(result.getString("role"));
 				temp.setAccessPrivilege(result.getString("accessPrivilege"));
 
@@ -442,4 +453,7 @@ public class RoleDaoImpl implements RoleDao {
 		}
 	}
 
+    
+
+    
 }

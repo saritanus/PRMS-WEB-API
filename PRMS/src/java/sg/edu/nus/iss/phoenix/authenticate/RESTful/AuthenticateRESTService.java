@@ -17,7 +17,7 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import sg.edu.nus.iss.phoenix.authenticate.entity.User;
+import sg.edu.nus.iss.phoenix.user.entity.User;
 import sg.edu.nus.iss.phoenix.authenticate.service.AuthenticateService;
 
 /**
@@ -69,7 +69,7 @@ public class AuthenticateRESTService {
     private boolean checkCredentials(String uname, String pwd){
         System.out.println("Inside checkCredentials");
         User user = new User();
-        user.setId(uname);
+        user.setName(uname);
         user.setPassword(pwd);  
         user = service.validateUserIdPassword(user);
         if (null != user) {

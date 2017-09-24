@@ -8,8 +8,8 @@ import java.util.logging.*;
 
 import sg.edu.nus.iss.phoenix.authenticate.dao.RoleDao;
 import sg.edu.nus.iss.phoenix.authenticate.dao.UserDao;
-import sg.edu.nus.iss.phoenix.authenticate.entity.Role;
-import sg.edu.nus.iss.phoenix.authenticate.entity.User;
+import sg.edu.nus.iss.phoenix.user.entity.Role;
+import sg.edu.nus.iss.phoenix.user.entity.User;
 import sg.edu.nus.iss.phoenix.core.dao.DAOFactoryImpl;
 import sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException;
 

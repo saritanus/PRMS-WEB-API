@@ -10,11 +10,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import sg.edu.nus.iss.phoenix.authenticate.dao.RoleDao;
 
 import sg.edu.nus.iss.phoenix.authenticate.dao.UserDao;
-import sg.edu.nus.iss.phoenix.authenticate.entity.Role;
-import sg.edu.nus.iss.phoenix.authenticate.entity.User;
-import sg.edu.nus.iss.phoenix.core.dao.DBConstants;
+import sg.edu.nus.iss.phoenix.core.dao.DAOFactoryImpl;
+import sg.edu.nus.iss.phoenix.user.entity.Role;
+import sg.edu.nus.iss.phoenix.user.entity.User;
 import sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException;
 
 /**
@@ -122,8 +123,7 @@ public class UserDaoImpl implements UserDao {
             sql = "INSERT INTO user ( id, password, name, "
                     + "role) VALUES (?, ?, ?, ?) ";
             stmt = this.connection.prepareStatement(sql);
-
-            stmt.setString(1, valueObject.getId());
+            stmt.setInt(1, valueObject.getUserId());
             stmt.setString(2, valueObject.getPassword());
             stmt.setString(3, valueObject.getName());
             stmt.setString(4, valueObject.getRoles().get(0).getRole());
@@ -161,7 +161,7 @@ public class UserDaoImpl implements UserDao {
             stmt.setString(2, valueObject.getName());
             stmt.setString(3, valueObject.getRoles().get(0).getRole());
 
-            stmt.setString(4, valueObject.getId());
+            stmt.setInt(4, valueObject.getUserId());
 
             int rowcount = databaseUpdate(stmt);
             if (rowcount == 0) {
@@ -196,7 +196,7 @@ public class UserDaoImpl implements UserDao {
 
         try {
             stmt = this.connection.prepareStatement(sql);
-            stmt.setString(1, valueObject.getId());
+            stmt.setInt(1, valueObject.getUserId());
 
             int rowcount = databaseUpdate(stmt);
             if (rowcount == 0) {
@@ -300,11 +300,11 @@ public class UserDaoImpl implements UserDao {
         boolean first = true;
         StringBuffer sql = new StringBuffer("SELECT * FROM user WHERE 1=1 ");
 
-        if (valueObject.getId() != "") {
+        if (valueObject.getUserId()<=0) {
             if (first) {
                 first = false;
             }
-            sql.append("AND id = ").append(valueObject.getId()).append(" ");
+            sql.append("AND id = ").append(valueObject.getUserId()).append(" ");
         }
 
         if (valueObject.getPassword() != null) {
@@ -370,7 +370,7 @@ public class UserDaoImpl implements UserDao {
      * resultset will be converted to valueObject. If no rows were found,
      * NotFoundException will be thrown.
      *
-     * @param stmt This parameter contains the SQL statement to be excuted.
+     * @param stmt This parameter contains the SQL statement to be executed.
      * @param valueObject Class-instance where resulting data will be stored.
      * @throws sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException
      * @throws java.sql.SQLException
@@ -382,13 +382,13 @@ public class UserDaoImpl implements UserDao {
 
             if (result.next()) {
 
-                valueObject.setId(result.getString("userid"));
+                valueObject.setUserId(result.getInt("userid"));
                 valueObject.setPassword(result.getString("password"));
                 valueObject.setName(result.getString("name"));
-                valueObject.setRoles(createRoles(result.getString("role")));
-                Role e = new Role(result.getString("role"));
-                ArrayList<Role> roles = new ArrayList<Role>();
-                roles.add(e);
+                
+                DAOFactoryImpl factory = new DAOFactoryImpl();
+                RoleDao roleDAO = factory.getRoleDAO();
+                List roles =roleDAO.loadUerRole(valueObject);
                 valueObject.setRoles(roles);
 
             } else {
@@ -419,10 +419,11 @@ public class UserDaoImpl implements UserDao {
 
             while (result.next()) {
                 User temp = createValueObject();
-                temp.setId(result.getString("id"));
+
+                temp.setUserId(result.getInt("id"));
                 temp.setPassword(result.getString("password"));
                 temp.setName(result.getString("name"));
-                temp.setRoles(createRoles(result.getString("role")));
+               // temp.setRoles(createRoles(result.getString("role")));
                 //Role e = new Role(result.getString("role"));
                 //ArrayList<Role> roles = new ArrayList<Role>();
                 //roles.add(e);
@@ -457,8 +458,9 @@ public class UserDaoImpl implements UserDao {
         }
 
         try {
-            conn = DriverManager.getConnection(DBConstants.dbUrl,DBConstants.dbUserName, DBConstants.dbPassword);
-                   
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/phoenixft04", "root",
+                    "root");
         } catch (SQLException e) {
         }
         return conn;
