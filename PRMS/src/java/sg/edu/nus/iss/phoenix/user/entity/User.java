@@ -1,7 +1,6 @@
 package sg.edu.nus.iss.phoenix.user.entity;
 
 import java.io.Serializable;
-import java.sql.Time;
 import java.util.Date;
 
 public class User implements Cloneable, Serializable {
