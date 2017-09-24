@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -122,13 +123,20 @@ public class UserDAOImpl implements UserDAO {
 //            sql = "INSERT INTO user ( id, password, name, "
 //                    + "role) VALUES (?, ?, ?, ?) ";
             sql = "INSERT INTO user ( name, password) VALUES (?, ?) ";
-            stmt = this.connection.prepareStatement(sql);
+            stmt = this.connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, valueObject.getName());
             stmt.setString(2, valueObject.getPassword());
 //            stmt.setString(3, valueObject.getName());
 //            stmt.setString(4, valueObject.getRoles().get(0).getRole());
-
             int rowcount = databaseUpdate(stmt);
+            int last_inserted_id =0;
+            ResultSet rs = stmt.getGeneratedKeys();
+            if(rs.next())
+                {
+                    last_inserted_id = rs.getInt(1);
+                }
+            System.out.println("created row id is:" + rs); 
+            System.out.println("created last id is:"+ last_inserted_id);
             if (rowcount != 1) {
                 // System.out.println("PrimaryKey Error when updating DB!");
                 throw new SQLException("PrimaryKey Error when updating DB!");
