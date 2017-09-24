@@ -2,6 +2,7 @@ package sg.edu.nus.iss.phoenix.user.entity;
 
 import java.io.Serializable;
 import java.sql.Time;
+import java.util.Date;
 
 public class User implements Cloneable, Serializable {
 
@@ -18,7 +19,7 @@ public class User implements Cloneable, Serializable {
     private String name;
     private String password;
     private String emailID;
-    private String joiningDate;
+    private Date joiningDate;
 
     /** 
      * Constructors. 
@@ -37,7 +38,7 @@ public class User implements Cloneable, Serializable {
 
     }
 
-    public User (String nameIn, String passwordIn, String emailIDIn, String joiningDateIn) {
+    public User (String nameIn, String passwordIn, String emailIDIn, Date joiningDateIn) {
           this.name = nameIn;
           this.password = passwordIn;
           this.emailID = emailIDIn;
@@ -74,10 +75,10 @@ public class User implements Cloneable, Serializable {
           this.emailID = emailIDIn;
     }
 
-	public String getJoiningDate() {
+    public Date getJoiningDate() {
           return this.joiningDate;
     }
-    public void setJoiningDate(String joiningDateIn) {
+    public void setJoiningDate(Date joiningDateIn) {
           this.joiningDate = joiningDateIn;
     }
 
@@ -96,7 +97,7 @@ public class User implements Cloneable, Serializable {
     public void setAll(String nameIn,
           String passwordIn,
           String emailIDIn,
-          String joiningDateIn) {
+          Date joiningDateIn) {
           this.name = nameIn;
           this.password = passwordIn;
           this.emailID = emailIDIn;
@@ -169,6 +170,7 @@ public class User implements Cloneable, Serializable {
      * @throws java.lang.CloneNotSupportedException 
      */
         @Override
+    @SuppressWarnings("CloneDoesntCallSuperClone")
     public Object clone() throws CloneNotSupportedException {
         User cloned = new User();
 
@@ -179,7 +181,7 @@ public class User implements Cloneable, Serializable {
         if (this.emailID != null)
              cloned.setEmailID(this.emailID);
         if (this.joiningDate != null)
-             cloned.setJoiningDate(this.joiningDate);
+             cloned.setJoiningDate((Date)this.joiningDate.clone());
         return cloned;
     }
 
