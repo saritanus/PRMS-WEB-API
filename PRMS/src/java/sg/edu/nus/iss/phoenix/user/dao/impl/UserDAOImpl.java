@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import sg.edu.nus.iss.phoenix.user.dao.RoleDAO;
 import sg.edu.nus.iss.phoenix.user.dao.UserDAO;
 import sg.edu.nus.iss.phoenix.core.dao.DAOFactoryImpl;
+import sg.edu.nus.iss.phoenix.core.dao.DBConstants;
 import sg.edu.nus.iss.phoenix.user.entity.Role;
 import sg.edu.nus.iss.phoenix.user.entity.User;
 import sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException;
@@ -456,9 +457,8 @@ public class UserDAOImpl implements UserDAO {
         }
 
         try {
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/phoenixft04", "root",
-                    "root");
+            conn = DriverManager.getConnection(DBConstants.dbUrl,
+					DBConstants.dbUserName, DBConstants.dbPassword);
         } catch (SQLException e) {
         }
         return conn;
