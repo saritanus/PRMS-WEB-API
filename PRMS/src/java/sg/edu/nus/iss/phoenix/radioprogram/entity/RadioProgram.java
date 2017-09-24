@@ -14,6 +14,7 @@ public class RadioProgram implements Cloneable, Serializable {
      * Persistent Instance variables. This data is directly 
      * mapped to the columns of database table.
      */
+    private int radioId;
     private String name;
     private String description;
     private Time typicalDuration;
@@ -54,6 +55,14 @@ public class RadioProgram implements Cloneable, Serializable {
      * @return 
      */
 
+    public int getRadioId()
+    {
+        return this.radioId;
+    }
+    public void setRadioId(int radioId)
+    {
+        this.radioId = radioId;
+    }
     public String getName() {
           return this.name;
     }
@@ -88,10 +97,11 @@ public class RadioProgram implements Cloneable, Serializable {
      * @param typicalDurationIn
      */
 
-    public void setAll(String nameIn,
+    public void setAll(int radioId,String nameIn,
           String descriptionIn,
           Time typicalDurationIn) {
           this.name = nameIn;
+          this.radioId = radioId;
           this.description = descriptionIn;
           this.typicalDuration = typicalDurationIn;
     }
