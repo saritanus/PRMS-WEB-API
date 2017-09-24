@@ -1,23 +1,66 @@
-package phoenix.user.restful;
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package sg.edu.nus.iss.phoenix.user.restful;
 
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import javax.enterprise.context.RequestScoped;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriInfo;
+import sg.edu.nus.iss.phoenix.user.entity.User;
+import sg.edu.nus.iss.phoenix.user.service.UserService;
 
 /**
- * @author vimal raj
- * @version 1.0
- * @created 18-Sep-2017 10:56:46 PM
+ * REST Web Service
+ *
+ * @author User
  */
+@Path("user")
+@RequestScoped
 public class UserRESTService {
 
-	public UserRESTService(){
+    @Context
+    private UriInfo context;
+    
+    private UserService service;
 
-	}
+    /**
+     * Creates a new instance of UserRESTService
+     */
+    public UserRESTService() {
+        service = new UserService();
+    }
+
 
 	public void finalize() throws Throwable {
 
 	}
-	public void createUsers(){
+        
+    /**
+     * PUT method for updating or creating an instance of resource
+     * @param content representation for the resource
+     */
+    @PUT
+    @Path("/create")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void createUser(User usr) {
+        service.processCreate(usr);
 
-	}
+    }
 
 	public void deleteUsers(){
 

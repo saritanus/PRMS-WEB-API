@@ -119,13 +119,14 @@ public class UserDAOImpl implements UserDAO {
         String sql = "";
         PreparedStatement stmt = null;
         try {
-            sql = "INSERT INTO user ( id, password, name, "
-                    + "role) VALUES (?, ?, ?, ?) ";
+//            sql = "INSERT INTO user ( id, password, name, "
+//                    + "role) VALUES (?, ?, ?, ?) ";
+            sql = "INSERT INTO user ( name, password) VALUES (?, ?) ";
             stmt = this.connection.prepareStatement(sql);
-            stmt.setInt(1, valueObject.getUserId());
+            stmt.setString(1, valueObject.getName());
             stmt.setString(2, valueObject.getPassword());
-            stmt.setString(3, valueObject.getName());
-            stmt.setString(4, valueObject.getRoles().get(0).getRole());
+//            stmt.setString(3, valueObject.getName());
+//            stmt.setString(4, valueObject.getRoles().get(0).getRole());
 
             int rowcount = databaseUpdate(stmt);
             if (rowcount != 1) {
