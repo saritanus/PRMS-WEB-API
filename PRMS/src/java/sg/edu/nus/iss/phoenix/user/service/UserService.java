@@ -43,13 +43,16 @@ public class UserService {
 		return currentList;
 	}
 
-	public void processCreate(User usr) {
+	public int processCreate(User usr) {
+            int newID=0;
             try {
-		userdao.create(usr);
+		newID = userdao.create(usr);
+                System.out.println("Inserted record ID is:"+ newID);
             } catch (SQLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
+            return newID;
 	}
 
 

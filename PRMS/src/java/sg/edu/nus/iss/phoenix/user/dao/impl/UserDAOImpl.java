@@ -115,7 +115,7 @@ public class UserDAOImpl implements UserDAO {
 	 * Connection, sg.edu.nus.iss.phoenix.authenticate.entity.User)
      */
     @Override
-    public synchronized void create(User valueObject) throws SQLException {
+    public synchronized int create(User valueObject) throws SQLException {
 
         String sql = "";
         PreparedStatement stmt = null;
@@ -141,6 +141,7 @@ public class UserDAOImpl implements UserDAO {
                 // System.out.println("PrimaryKey Error when updating DB!");
                 throw new SQLException("PrimaryKey Error when updating DB!");
             }
+            return last_inserted_id ;
 
         } finally {
             if (stmt != null) {

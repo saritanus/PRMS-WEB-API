@@ -75,7 +75,7 @@ public interface UserDAO {
 	 *            must be set for this to work properly.
      * @throws java.sql.SQLException
 	 */
-	public abstract void create(User valueObject)
+	public abstract int create(User valueObject)
 			throws SQLException;
 
 	/**

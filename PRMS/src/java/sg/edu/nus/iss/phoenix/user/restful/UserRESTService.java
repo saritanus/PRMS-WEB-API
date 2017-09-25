@@ -57,8 +57,9 @@ public class UserRESTService {
     @PUT
     @Path("/create")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void createUser(User usr) {
-        service.processCreate(usr);
+    public int createUser(User usr) {
+        int newID = service.processCreate(usr);
+        return newID;
 
     }
     
