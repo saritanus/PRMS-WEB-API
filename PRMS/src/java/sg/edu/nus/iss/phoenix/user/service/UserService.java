@@ -22,11 +22,22 @@ public class UserService {
 	public void finalize() throws Throwable {
 
 	}
-	public void findAllPresenters(){
+	public ArrayList<User> findAllPresenters() throws SQLException
+        {
+         ArrayList<User> currentList = new ArrayList<User>();
+            System.out.println("In findAllPresenters");
+         currentList = (ArrayList<User>) userdao.loadAllPresenters(); // TODO Auto-generated catch block
+		return currentList;   
 
 	}
+        
 
-	public void findAllProducers(){
+	public ArrayList<User> findAllProducers() throws SQLException
+        {
+            ArrayList<User> currentList = new ArrayList<User>();
+            System.out.println("In findAllProducers");
+            currentList = (ArrayList<User>) userdao.loadAllProducers(); // TODO Auto-generated catch block
+		return currentList;
 
 	}
 

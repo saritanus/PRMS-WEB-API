@@ -54,6 +54,11 @@ public class User implements Cloneable, Serializable {
           this.password = password;
     }
 
+    public User(int userId, String name) {
+          this.userId=userId;
+          this.name=name;
+    }
+
 
     /** 
      * Get- and Set-methods for persistent variables. The default

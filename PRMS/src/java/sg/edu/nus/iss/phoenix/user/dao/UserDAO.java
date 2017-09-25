@@ -60,6 +60,8 @@ public interface UserDAO {
      * @throws java.sql.SQLException
 	 */
 	public abstract List<User> loadAll() throws SQLException;
+        public abstract List<User> loadAllPresenters() throws SQLException;
+        public abstract List<User> loadAllProducers() throws SQLException;
 
 	/**
 	 * create-method. This will create new row in database according to supplied

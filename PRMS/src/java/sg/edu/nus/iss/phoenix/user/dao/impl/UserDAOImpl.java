@@ -114,6 +114,28 @@ public class UserDAOImpl implements UserDAO {
 	 * sg.edu.nus.iss.phoenix.authenticate.dao.impl.UserDao#create(java.sql.
 	 * Connection, sg.edu.nus.iss.phoenix.authenticate.entity.User)
      */
+    
+    @Override
+	public List<User> loadAllPresenters() throws SQLException {
+                System.out.println("In UserDAOImpl");
+		openConnection();
+		String sql = "SELECT u.userid,name FROM phoenixft04.user AS u JOIN phoenixft04.`user-role` as ur ON u.userid=ur.userId Join phoenixft04.role AS r ON r.roleId=ur.roleId  where r.role='presenter' ORDER BY `name` ASC; ";
+		List<User> searchResults = listQueryName(connection
+				.prepareStatement(sql));
+		closeConnection();
+		System.out.println("record size"+searchResults.size());
+		return searchResults;
+	}
+        @Override
+	public List<User> loadAllProducers() throws SQLException {
+		openConnection();
+		String sql = "SELECT u.userid,name FROM phoenixft04.user AS u JOIN phoenixft04.`user-role` as ur ON u.userid=ur.userId Join phoenixft04.role AS r ON r.roleId=ur.roleId  where r.role='producer' ORDER BY `name` ASC; ";
+		List<User> searchResults = listQueryName(connection
+				.prepareStatement(sql));
+		closeConnection();
+		System.out.println("record size"+searchResults.size());
+		return searchResults;
+	}
     @Override
     public synchronized int create(User valueObject) throws SQLException {
 
@@ -449,6 +471,34 @@ public class UserDAOImpl implements UserDAO {
 
         return (List<User>) searchResults;
     }
+    protected List<User> listQueryName(PreparedStatement stmt) throws SQLException {
+
+        ArrayList<User> searchResults = new ArrayList<>();
+        try (ResultSet result = stmt.executeQuery()) {
+
+            while (result.next()) {
+                User temp = createValueObject();
+                temp.setUserId(result.getInt(1));
+                System.out.println("printing temp value:"+temp.getUserId());
+                //temp.setPassword(result.getString("password"));
+                temp.setName(result.getString("name"));
+               // temp.setRoles(createRoles(result.getString("role")));
+                //Role e = new Role(result.getString("role"));
+                //ArrayList<Role> roles = new ArrayList<Role>();
+                //roles.add(e);
+                //temp.setRoles(roles);
+
+                searchResults.add(temp);
+            }
+
+        } finally {
+            if (stmt != null) {
+                stmt.close();
+            }
+        }
+
+        return (List<User>) searchResults;
+    }
 
     private ArrayList<Role> createRoles(final String roles) {
         ArrayList<Role> roleList = new ArrayList<>();
@@ -465,7 +515,7 @@ public class UserDAOImpl implements UserDAO {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException e) {
         }
-
+    
         try {
             conn = DriverManager.getConnection(DBConstants.dbUrl,
 					DBConstants.dbUserName, DBConstants.dbPassword);
@@ -473,4 +523,12 @@ public class UserDAOImpl implements UserDAO {
         }
         return conn;
     }
+      private void closeConnection() {
+		try {
+			this.connection.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
