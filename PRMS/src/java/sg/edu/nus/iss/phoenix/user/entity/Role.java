@@ -37,6 +37,12 @@ public class Role implements Cloneable, Serializable {
 
 	}
 
+    public Role(int roleId, String role, String accessPrivilege) {
+        this.roleId = roleId;
+        this.role = role;
+        this.accessPrivilege = accessPrivilege;
+    }
+
 	/**
 	 * Get- and Set-methods for persistent variables. The default behaviour does
 	 * not make any checks against malformed data, so these might require some

@@ -21,7 +21,8 @@ import sg.edu.nus.iss.phoenix.user.entity.User;
  * is needed to permanently store and retrieve Role object instances.
  */
 public class RoleDAOImpl implements RoleDAO {
-
+        
+        private static final String DELIMITER = ":";
 	private static final Logger logger = Logger.getLogger(RoleDAOImpl.class.getName());
 
 	Connection connection;
@@ -108,12 +109,10 @@ public class RoleDAOImpl implements RoleDAO {
 	 */
 	@Override
 	public List<Role> loadAll() throws SQLException {
-		connection = openConnection();
-		String sql = "SELECT * FROM role ORDER BY role ASC ";
-		List<Role> searchResults = listQuery(this.connection
-				.prepareStatement(sql));
-
-		return searchResults;
+            String sql = "SELECT * FROM role";
+            List<Role> searchResults = listQuery(this.connection
+                    .prepareStatement(sql));
+            return searchResults;
 	}
 
 	/*
@@ -397,36 +396,32 @@ public class RoleDAOImpl implements RoleDAO {
 	 * found, an empty List will be returned.
 	 * 
 	 * @param stmt
-	 *            This parameter contains the SQL statement to be excuted.
+	 *            This parameter contains the SQL statement to be executed.
      * @return 
      * @throws java.sql.SQLException
 	 */
-	protected List<Role> listQuery(PreparedStatement stmt) throws SQLException {
+    protected List<Role> listQuery(PreparedStatement stmt) throws SQLException {
 
-		ArrayList<Role> searchResults = new ArrayList<>();
-		ResultSet result = null;
-		connection = openConnection();
-		try {
-			result = stmt.executeQuery();
+	ArrayList<Role> searchResults = new ArrayList<>();
+	try(ResultSet result = stmt.executeQuery()) {
+		
+            while (result.next()) {
+		Role temp = createValueObject();
+                temp.setRoleId(result.getInt(1));
+                temp.setRole(result.getString("role"));
+		temp.setAccessPrivilege(result.getString("accessPrivilege"));
 
-			while (result.next()) {
-				Role temp = createValueObject();
-                                temp.setRoleId(result.getInt("roleId"));
-				temp.setRole(result.getString("role"));
-				temp.setAccessPrivilege(result.getString("accessPrivilege"));
+		searchResults.add(temp);
+            }
 
-				searchResults.add(temp);
-			}
+	} finally {
+//            if (result != null)
+//		result.close();
+            if (stmt != null)
+		stmt.close();
+            }
 
-		} finally {
-			if (result != null)
-				result.close();
-			if (stmt != null)
-				stmt.close();
-			closeConnection();
-		}
-
-		return (List<Role>) searchResults;
+            return (List<Role>) searchResults;
 	}
 
 	private Connection openConnection() {
