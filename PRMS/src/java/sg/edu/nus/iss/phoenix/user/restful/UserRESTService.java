@@ -61,6 +61,25 @@ public class UserRESTService {
         service.processCreate(usr);
 
     }
+    
+    @GET
+    @Path("/all")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Users getAllUsers() {
+        ArrayList<User> userlist = service.findAllUsers();
+        System.out.println("In UserRESTService userlist size:"+userlist.size());
+        Users usersList = new Users();
+        usersList.setUserList(new ArrayList<User>());
+        
+        for (int i = 0; i < userlist.size(); i++) {
+            usersList.getUserList().add(
+                new User(userlist.get(i).getUserId(),
+                        userlist.get(i).getName(), 
+                    userlist.get(i).getPassword()));
+        }
+
+        return usersList;
+    }
 
 	public void deleteUsers(){
 

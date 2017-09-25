@@ -48,6 +48,12 @@ public class User implements Cloneable, Serializable {
           this.joiningDate = joiningDateIn;
     }
 
+    public User(int userId, String name, String password) {
+          this.userId = userId;
+          this.name = name;
+          this.password = password;
+    }
+
 
     /** 
      * Get- and Set-methods for persistent variables. The default

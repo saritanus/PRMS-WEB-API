@@ -30,8 +30,17 @@ public class UserService {
 
 	}
 
-	public void findAllUsers(){
-
+	public ArrayList<User> findAllUsers() {
+            ArrayList<User> currentList = new ArrayList<User>();
+            try {
+            	currentList = (ArrayList<User>) userdao.loadAll();
+                System.out.println("In UserService, currentlist size:"+currentList.size());
+                
+		} catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+		}
+		return currentList;
 	}
 
 	public void processCreate(User usr) {

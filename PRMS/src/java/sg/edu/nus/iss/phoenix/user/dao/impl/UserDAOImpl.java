@@ -101,7 +101,7 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public List<User> loadAll() throws SQLException {
 
-        String sql = "SELECT * FROM user ORDER BY id ASC ";
+        String sql = "SELECT * FROM user ORDER BY userid ASC ";
         List<User> searchResults = listQuery(this.connection
                 .prepareStatement(sql));
         return searchResults;
@@ -427,8 +427,8 @@ public class UserDAOImpl implements UserDAO {
 
             while (result.next()) {
                 User temp = createValueObject();
-
-                temp.setUserId(result.getInt("id"));
+                temp.setUserId(result.getInt(1));
+                System.out.println("printing temp value:"+temp.getUserId());
                 temp.setPassword(result.getString("password"));
                 temp.setName(result.getString("name"));
                // temp.setRoles(createRoles(result.getString("role")));
