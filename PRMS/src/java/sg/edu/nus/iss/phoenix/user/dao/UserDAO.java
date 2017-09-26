@@ -79,6 +79,18 @@ public interface UserDAO {
 	 */
 	public abstract int create(User valueObject)
 			throws SQLException;
+        
+        /**
+	 * assignrole-method. This will assign the role to the corresponding use
+         * update the user-role table by mapping userid to roleid. 
+	 * @param valueObject
+	 *            This parameter contains the class instance to be created. If
+	 *            automatic surrogate-keys are not used the Primary-key field
+	 *            must be set for this to work properly.
+     * @throws java.sql.SQLException
+	 */
+        public abstract void assignrole(User valueObject) 
+                        throws SQLException;
 
 	/**
 	 * save-method. This method will save the current state of valueObject to

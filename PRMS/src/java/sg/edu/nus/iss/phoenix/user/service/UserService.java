@@ -54,17 +54,17 @@ public class UserService {
 		return currentList;
 	}
 
-	public int processCreate(User usr) {
-            int newID=0;
-            try {
-		newID = userdao.create(usr);
+    public int processCreate(User usr) {
+        int newID=0;
+        try {
+                newID = userdao.create(usr);
                 System.out.println("Inserted record ID is:"+ newID);
-            } catch (SQLException e) {
+        } catch (SQLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-            }
+        }
             return newID;
-	}
+    }
 
 
 	public void processDelete(){
@@ -74,4 +74,14 @@ public class UserService {
 	public void processModify(){
 
 	}
+
+    public void assignUserRole(User usr) {
+        try {
+            System.out.println("in UserService");
+            userdao.assignrole(usr);
+        } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+        }
+    }
 }//end UserService

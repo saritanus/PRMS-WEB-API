@@ -1,6 +1,7 @@
 package sg.edu.nus.iss.phoenix.user.dao.impl;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -136,20 +137,19 @@ public class UserDAOImpl implements UserDAO {
 		System.out.println("record size"+searchResults.size());
 		return searchResults;
 	}
+        
     @Override
     public synchronized int create(User valueObject) throws SQLException {
 
         String sql = "";
         PreparedStatement stmt = null;
         try {
-//            sql = "INSERT INTO user ( id, password, name, "
-//                    + "role) VALUES (?, ?, ?, ?) ";
-            sql = "INSERT INTO user ( name, password) VALUES (?, ?) ";
+            sql = "INSERT INTO user ( name, password, emailId, joiningDate ) VALUES (?, ?, ?, ?) ";
             stmt = this.connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
             stmt.setString(1, valueObject.getName());
             stmt.setString(2, valueObject.getPassword());
-//            stmt.setString(3, valueObject.getName());
-//            stmt.setString(4, valueObject.getRoles().get(0).getRole());
+            stmt.setString(3, valueObject.getEmailID());
+            stmt.setDate(4, (Date) valueObject.getJoiningDate());
             int rowcount = databaseUpdate(stmt);
             int last_inserted_id =0;
             ResultSet rs = stmt.getGeneratedKeys();
@@ -171,6 +171,36 @@ public class UserDAOImpl implements UserDAO {
             }
         }
 
+    }
+    
+    @Override
+    public synchronized void assignrole(User valueObject) throws SQLException {
+            
+        String sql = "";
+        PreparedStatement stmt =null;
+        System.out.println("in assignrole");
+        int i = 0;
+        System.out.println("data from front"+valueObject.getUserId());
+        int size = valueObject.getRoleId().size();
+        System.out.println("got the size"+size);
+        while ( i < size){
+             try {
+                    stmt = null;
+                    sql = "INSERT INTO `user-role` VALUES (?, ?) ";
+                    stmt = this.connection.prepareStatement(sql);                   
+                    stmt.setInt(1, valueObject.getUserId());
+                    stmt.setInt(2, valueObject.getRoleId().get(i));
+                    i++;
+                    int rowcount = databaseUpdate(stmt);
+                    if (rowcount != 1) {
+                    throw new SQLException("PrimaryKey Error when updating DB!");
+            }
+            } finally {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            }
+        }    
     }
 
     /*

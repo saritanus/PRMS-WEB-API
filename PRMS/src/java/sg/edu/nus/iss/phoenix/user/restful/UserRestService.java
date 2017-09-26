@@ -59,11 +59,26 @@ public class UserRestService {
     @Path("/create")
     @Consumes(MediaType.APPLICATION_JSON)
     public int createUser(User usr) {
+        System.out.println("UserRestService print data:"+usr);
         int newID = service.processCreate(usr);
         return newID;
 
     }
     
+    /**
+     * PUT method for updating or creating an instance of resource
+     * @param content representation for the resource
+     */
+    @PUT
+    @Path("/assignrole")
+    @Consumes(MediaType.APPLICATION_JSON)
+    //@Consumes("application/json")
+    @Produces("application/json")
+    public void assignRole(User usr) {
+        System.out.println("UserRestService print data:"+usr);
+        service.assignUserRole(usr);
+    }    
+        
     @GET
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
@@ -109,7 +124,7 @@ public class UserRestService {
         return users;
     }
         
-     @GET
+    @GET
     @Path("/allproducer")
     @Produces(MediaType.APPLICATION_JSON)
     public Users getAllProducers() throws SQLException {

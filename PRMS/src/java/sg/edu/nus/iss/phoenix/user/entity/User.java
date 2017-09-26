@@ -17,12 +17,13 @@ public class User implements Cloneable, Serializable {
      * mapped to the columns of database table.
      */
     //private int userId;
+    private int userId;
     private String name;
     private String password;
     private String emailID;
     private Date joiningDate;
-    private int userId;
-    private  List<Role> listRoles = new ArrayList<Role>();
+    private List<Role> listRoles = new ArrayList<Role>();
+    private List<Integer> roleId = new ArrayList<Integer>();
 
     /** 
      * Constructors. 
@@ -41,7 +42,8 @@ public class User implements Cloneable, Serializable {
 
     }
 
-    public User (String nameIn, String passwordIn, String emailIDIn, Date joiningDateIn) {
+    public User (int userIdIn, String nameIn, String passwordIn, String emailIDIn, Date joiningDateIn) {
+          this.userId = userIdIn;
           this.name = nameIn;
           this.password = passwordIn;
           this.emailID = emailIDIn;
@@ -57,6 +59,12 @@ public class User implements Cloneable, Serializable {
     public User(int userId, String name) {
           this.userId=userId;
           this.name=name;
+    }
+    
+    public User(int userId,List<Integer> roleId)
+    {
+        this.userId = userId;
+        this.roleId = roleId;
     }
 
 
@@ -108,6 +116,14 @@ public class User implements Cloneable, Serializable {
     {
         this.listRoles = list;
     }
+    public List<Integer> getRoleId()
+    {
+        return this.roleId;
+    }
+    public void setRoleId(List<Integer> list)
+    {
+        this.roleId = list;
+    }
 
     /** 
      * setAll allows to set all persistent variables in one method call.
@@ -115,16 +131,18 @@ public class User implements Cloneable, Serializable {
      * set the initial state of this object. Note that this method will
      * directly modify instance variables, without going trough the 
      * individual set-methods.
+     * @param userIdIn
      * @param nameIn
      * @param passwordIn
      * @param emailIDIn
      * @param joiningDateIn
      */
 
-    public void setAll(String nameIn,
+    public void setAll(int userIdIn,String nameIn,
           String passwordIn,
           String emailIDIn,
           Date joiningDateIn) {
+          this.userId = userIdIn;
           this.name = nameIn;
           this.password = passwordIn;
           this.emailID = emailIDIn;
@@ -179,7 +197,8 @@ public class User implements Cloneable, Serializable {
         public String toString() {
         StringBuilder out = new StringBuilder();
         out.append("\nUser class, mapping to table user\n");
-        out.append("Persistent attributes: \n"); 
+        out.append("Persistent attributes: \n");
+        out.append("userid = ").append(this.userId).append("\n");
         out.append("name = ").append(this.name).append("\n"); 
         out.append("password = ").append(this.password).append("\n"); 
         out.append("emailID = ").append(this.emailID).append("\n");
