@@ -25,8 +25,8 @@ public class DeleteRadioProgramCmd implements Perform {
     @Override
     public String perform(String path, HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         ProgramDelegate del = new ProgramDelegate();
-        String name = req.getParameter("name");
-        del.processDelete(name);
+        int id = Integer.valueOf(req.getParameter("id"));
+        del.processDelete(id);
 
         ReviewSelectProgramDelegate rsDel = new ReviewSelectProgramDelegate();
         List<RadioProgram> data = rsDel.reviewSelectRadioProgram();

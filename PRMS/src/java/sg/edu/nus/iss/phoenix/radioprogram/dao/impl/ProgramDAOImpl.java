@@ -50,18 +50,17 @@ public class ProgramDAOImpl implements ProgramDAO {
 	public void load(RadioProgram valueObject) throws NotFoundException,
 			SQLException {
 
-		if (valueObject.getName() == null) {
+		if (valueObject.getRadioId()==0) {
 			// System.out.println("Can not select without Primary-Key!");
 			throw new NotFoundException("Can not select without Primary-Key!");
 		}
 
-		String sql = "SELECT * FROM `radio-program` WHERE (`name` = ? ); ";
+		String sql = "SELECT * FROM `radio-program` WHERE (`programId` = ? ); ";
 		PreparedStatement stmt = null;
 		openConnection();
 		try {
 			stmt = connection.prepareStatement(sql);
-			stmt.setString(1, valueObject.getName());
-
+			stmt.setInt(1, valueObject.getRadioId());
 			singleQuery(stmt, valueObject);
 
 		} finally {
@@ -77,7 +76,7 @@ public class ProgramDAOImpl implements ProgramDAO {
 	@Override
 	public List<RadioProgram> loadAll() throws SQLException {
 		openConnection();
-		String sql = "SELECT * FROM `radio-program` ORDER BY `name` ASC; ";
+		String sql = "SELECT * FROM `radio-program` ORDER BY `programName` ASC ; ";
 		List<RadioProgram> searchResults = listQuery(connection
 				.prepareStatement(sql));
 		closeConnection();
@@ -96,7 +95,7 @@ public class ProgramDAOImpl implements ProgramDAO {
 		PreparedStatement stmt = null;
 		openConnection();
 		try {
-			sql = "INSERT INTO `radio-program` (`name`, `desc`, `typicalDuration`) VALUES (?,?,?); ";
+			sql = "INSERT INTO `radio-program` (`programName`, `description`, `duration`) VALUES (?,?,?); ";
 			stmt = connection.prepareStatement(sql);
 			stmt.setString(1, valueObject.getName());
 			stmt.setString(2, valueObject.getDescription());
@@ -122,15 +121,15 @@ public class ProgramDAOImpl implements ProgramDAO {
 	public void save(RadioProgram valueObject) throws NotFoundException,
 			SQLException {
 
-		String sql = "UPDATE `radio-program` SET `desc` = ?, `typicalDuration` = ? WHERE (`name` = ? ); ";
+		String sql = "UPDATE `radio-program` SET `programName`=?,`description` = ?, `duration` = ? WHERE (`programId` = ? ); ";
 		PreparedStatement stmt = null;
 		openConnection();
 		try {
 			stmt = connection.prepareStatement(sql);
-			stmt.setString(1, valueObject.getDescription());
-			stmt.setTime(2, valueObject.getTypicalDuration());
-
-			stmt.setString(3, valueObject.getName());
+                        stmt.setString(1, valueObject.getName());
+			stmt.setString(2, valueObject.getDescription());
+			stmt.setTime(3, valueObject.getTypicalDuration());
+			stmt.setInt(4, valueObject.getRadioId());
 
 			int rowcount = databaseUpdate(stmt);
 			if (rowcount == 0) {
@@ -157,17 +156,17 @@ public class ProgramDAOImpl implements ProgramDAO {
 	public void delete(RadioProgram valueObject) throws NotFoundException,
 			SQLException {
 
-		if (valueObject.getName() == null) {
+		if (valueObject.getRadioId()== 0) {
 			// System.out.println("Can not delete without Primary-Key!");
 			throw new NotFoundException("Can not delete without Primary-Key!");
 		}
 
-		String sql = "DELETE FROM `radio-program` WHERE (`name` = ? ); ";
+		String sql = "DELETE FROM `radio-program` WHERE (`programId` = ? ); ";
 		PreparedStatement stmt = null;
 		openConnection();
 		try {
 			stmt = connection.prepareStatement(sql);
-			stmt.setString(1, valueObject.getName());
+			stmt.setInt(1, valueObject.getRadioId());
 
 			int rowcount = databaseUpdate(stmt);
 			if (rowcount == 0) {
@@ -252,7 +251,7 @@ public class ProgramDAOImpl implements ProgramDAO {
 			if (first) {
 				first = false;
 			}
-			sql.append("AND `name` LIKE '").append(valueObject.getName())
+			sql.append("AND `programName` LIKE '").append(valueObject.getName())
 					.append("%' ");
 		}
 
@@ -260,7 +259,7 @@ public class ProgramDAOImpl implements ProgramDAO {
 			if (first) {
 				first = false;
 			}
-			sql.append("AND `desc` LIKE '").append(valueObject.getDescription())
+			sql.append("AND `description` LIKE '").append(valueObject.getDescription())
 					.append("%' ");
 		}
 
@@ -268,11 +267,11 @@ public class ProgramDAOImpl implements ProgramDAO {
 			if (first) {
 				first = false;
 			}
-			sql.append("AND `typicalDuration` = '")
+			sql.append("AND `duration` = '")
 					.append(valueObject.getTypicalDuration()).append("' ");
 		}
 
-		sql.append("ORDER BY `name` ASC ");
+		sql.append("ORDER BY `programName` ASC ");
 
 		// Prevent accidential full table results.
 		// Use loadAll if all rows must be returned.
@@ -300,7 +299,10 @@ public class ProgramDAOImpl implements ProgramDAO {
 	protected int databaseUpdate(PreparedStatement stmt) throws SQLException {
 
 		int result = stmt.executeUpdate();
-
+                //ResultSet rs = stmt.getGeneratedKeys();
+              //  if (rs.next()) {
+                 //   result = rs.getInt(1);
+              //  }
 		return result;
 	}
 
@@ -327,10 +329,10 @@ public class ProgramDAOImpl implements ProgramDAO {
 
 			if (result.next()) {
 
-				valueObject.setName(result.getString("name"));
-				valueObject.setDescription(result.getString("desc"));
+				valueObject.setName(result.getString("programName"));
+				valueObject.setDescription(result.getString("description"));
 				valueObject.setTypicalDuration(result
-						.getTime("typicalDuration"));
+						.getTime("duration"));
 
 			} else {
 				// System.out.println("RadioProgram Object Not Found!");
@@ -366,10 +368,10 @@ public class ProgramDAOImpl implements ProgramDAO {
 
 			while (result.next()) {
 				RadioProgram temp = createValueObject();
-
-				temp.setName(result.getString("name"));
-				temp.setDescription(result.getString("desc"));
-				temp.setTypicalDuration(result.getTime("typicalDuration"));
+                                temp.setRadioId(result.getInt("programId"));
+				temp.setName(result.getString("programName"));
+				temp.setDescription(result.getString("description"));
+				temp.setTypicalDuration(result.getTime("duration"));
 
 				searchResults.add(temp);
 			}

@@ -100,17 +100,17 @@ public class ProgramRESTService {
      * @param name name of the resource
      */
     @DELETE
-    @Path("/delete/{rpname}")
+    @Path("/delete/{rpid}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void deleteRadioProgram(@PathParam("rpname") String name) {
-        String name2;
+    public void deleteRadioProgram(@PathParam("rpid") String id) {
+        int rpid;  
         try { 
-            name2 = URLDecoder.decode(name, "UTF-8");
+             rpid = Integer.valueOf(URLDecoder.decode(id, "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace(); 
             return;
         }
 
-        service.processDelete(name2);
+        service.processDelete(rpid);
     }
 }

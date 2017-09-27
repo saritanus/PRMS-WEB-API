@@ -46,8 +46,8 @@ public class ProgramDelegate {
 		
 	}
 
-	public void processDelete(String name) {
+	public void processDelete(int rpid) {
 		ProgramService service = new ProgramService();
-		service.processDelete(name);
+		service.processDelete(rpid);
 	}
 }

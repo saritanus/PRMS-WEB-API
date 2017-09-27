@@ -92,10 +92,10 @@ public class ProgramService {
 		
 	}
 
-	public void processDelete(String name) {
+	public void processDelete(int rpid) {
 
             try {
-                RadioProgram rp = new RadioProgram(name);
+                RadioProgram rp = new RadioProgram(rpid);
                 rpdao.delete(rp);
             } catch (NotFoundException e) {
                 // TODO Auto-generated catch block
