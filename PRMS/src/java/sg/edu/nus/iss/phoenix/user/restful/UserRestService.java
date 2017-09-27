@@ -9,6 +9,8 @@ package sg.edu.nus.iss.phoenix.user.restful;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Consumes;
@@ -77,8 +79,23 @@ public class UserRestService {
     public void assignRole(User usr) {
         System.out.println("UserRestService print data:"+usr);
         service.assignUserRole(usr);
-    }    
-        
+    }
+
+    /**
+     * POST method for creating an instance of resource
+     * @param content representation for the resource
+     */
+    @POST
+    @Path("/update")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void updateRadioProgram(User user) {
+        service.processModify(user);
+    }
+    
+    /**
+     * Retrieves representation of an instance of resource
+     * @return an instance of resource
+     */
     @GET
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
@@ -91,8 +108,9 @@ public class UserRestService {
         for (int i = 0; i < userlist.size(); i++) {
             usersList.getUserList().add(
                 new User(userlist.get(i).getUserId(),
-                        userlist.get(i).getName(), 
-                    userlist.get(i).getPassword()));
+                        userlist.get(i).getName(),
+                        userlist.get(i).getEmailID(),
+                        userlist.get(i).getJoiningDate()));
         }
 
         return usersList;
@@ -144,7 +162,8 @@ public class UserRestService {
 
         return users;
     }
-
+    
+    
   
 
 
