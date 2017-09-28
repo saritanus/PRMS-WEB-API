@@ -1,30 +1,23 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package sg.edu.nus.iss.phoenix.schedule.restful;
 
+import java.util.List;
 import sg.edu.nus.iss.phoenix.schedule.entity.ProgramSlot;
 
-/**
- * @author The Administrator
- * @version 1.0
- * @created 18-Sep-2017 10:56:44 PM
- */
 public class ProgramSlots {
+    
+    private List <ProgramSlot> slotList;
 
-	public ProgramSlot m_ProgramSlot;
-
-
-
-	public void finalize() throws Throwable {
-
-	}
-	public void ProgramSlots(){
-
-	}
-
-	/*public void[] *add(){
-
-	}
-
-	public List<ProgramSlot> getScheduleList(){
-		return null;
-	}*/
-}//end ProgramSlots
+    public List<ProgramSlot> getSlotList() {
+        return slotList;
+    }
+ 
+    public void setSlotList(List<ProgramSlot> slotList) {
+        this.slotList = slotList;
+    }
+    
+}

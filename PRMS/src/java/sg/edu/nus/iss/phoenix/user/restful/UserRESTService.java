@@ -8,6 +8,7 @@ package sg.edu.nus.iss.phoenix.user.restful;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Consumes;
@@ -31,7 +32,7 @@ import sg.edu.nus.iss.phoenix.user.service.UserService;
  */
 @Path("user")
 @RequestScoped
-public class UserRESTService {
+public class UserRestService {
 
     @Context
     private UriInfo context;
@@ -41,7 +42,7 @@ public class UserRESTService {
     /**
      * Creates a new instance of UserRESTService
      */
-    public UserRESTService() {
+    public UserRestService() {
         service = new UserService();
     }
 
@@ -58,11 +59,26 @@ public class UserRESTService {
     @Path("/create")
     @Consumes(MediaType.APPLICATION_JSON)
     public int createUser(User usr) {
+        System.out.println("UserRestService print data:"+usr);
         int newID = service.processCreate(usr);
         return newID;
 
     }
     
+    /**
+     * PUT method for updating or creating an instance of resource
+     * @param content representation for the resource
+     */
+    @PUT
+    @Path("/assignrole")
+    @Consumes(MediaType.APPLICATION_JSON)
+    //@Consumes("application/json")
+    @Produces("application/json")
+    public void assignRole(User usr) {
+        System.out.println("UserRestService print data:"+usr);
+        service.assignUserRole(usr);
+    }    
+        
     @GET
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
@@ -85,14 +101,52 @@ public class UserRESTService {
 	public void deleteUsers(){
 
 	}
+        
+    @GET
+    @Path("/allpresenter")
+    @Produces(MediaType.APPLICATION_JSON)
+	public Users getAllPresenters() throws SQLException
+        {
+            System.out.println("In UserRestService");
+        ArrayList<User> presenterList = service.findAllPresenters();
+        Users users = new Users();
+        users.setUserList(new ArrayList<User>());
+            //System.out.println("in UserRestService");
+        for (int i = 0; i < presenterList.size(); i++) {
+            users.getUserList().add(
+                new User(presenterList.get(i).getUserId(),
+                        presenterList.get(i).getName()
+                    //presenterList.get(i).getPassword()
+                    
+                    
+                  ));
+        }
+        return users;
+    }
+        
+    @GET
+    @Path("/allproducer")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Users getAllProducers() throws SQLException {
+        ArrayList<User> producerList = service.findAllProducers();
+        Users users = new Users();
+        users.setUserList(new ArrayList<User>());
+        
+        for (int i = 0; i < producerList.size(); i++) {
+            users.getUserList().add(
+                new User(producerList.get(i).getUserId(), 
+                    //producerList.get(i).getPassword(), 
+                    producerList.get(i).getName()
+                    
+                    
+                        ));
+        }
 
-	public void getAllPresenters(){
+        return users;
+    }
 
-	}
+  
 
-	public void getAllProducers(){
-
-	}
 
 	public void modifyUsers(){
 

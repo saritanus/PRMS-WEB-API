@@ -8,7 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -92,6 +91,23 @@ public class UserDAOImpl implements UserDAO {
         }
     }
 
+    @Override
+    public void loadUser(User valueObject) throws NotFoundException, SQLException {
+
+        String sql = "SELECT * FROM user WHERE (name = ?) ";
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = this.connection.prepareStatement(sql);
+            stmt.setString(1, valueObject.getName());
+            singleQuery(stmt, valueObject);
+
+        } finally {
+            if (stmt != null) {
+                stmt.close();
+            }
+        }
+    }
     /*
 	 * (non-Javadoc)
 	 * 

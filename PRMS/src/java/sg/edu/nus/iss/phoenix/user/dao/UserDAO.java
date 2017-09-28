@@ -49,7 +49,9 @@ public interface UserDAO {
 	 */
 	public abstract void load(User valueObject)
 			throws NotFoundException, SQLException;
-
+        
+        public abstract void loadUser(User valueObject)
+			throws NotFoundException, SQLException;
 	/**
 	 * LoadAll-method. This will read all contents from database table and build
 	 * a List containing valueObjects. Please note, that this method will

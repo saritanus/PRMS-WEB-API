@@ -6,6 +6,7 @@ package sg.edu.nus.iss.phoenix.core.dao;
 
 
 import sg.edu.nus.iss.phoenix.radioprogram.dao.ProgramDAO;
+import sg.edu.nus.iss.phoenix.schedule.dao.ScheduleDAO;
 import sg.edu.nus.iss.phoenix.user.dao.RoleDAO;
 import sg.edu.nus.iss.phoenix.user.dao.UserDAO;
 
@@ -20,6 +21,8 @@ public interface DAOFactory {
 	RoleDAO getRoleDAO();
 
 	UserDAO getUserDAO();
+        
+        ScheduleDAO getScheduleDAO();
         
 	
 }

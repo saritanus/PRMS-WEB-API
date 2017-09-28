@@ -65,7 +65,7 @@ public class ProgramRESTService {
         
         for (int i = 0; i < rplist.size(); i++) {
             rpsList.getRpList().add(
-                new RadioProgram(rplist.get(i).getName(), 
+                new RadioProgram(rplist.get(i).getRadioId(),rplist.get(i).getName(), 
                     rplist.get(i).getDescription(), 
                     rplist.get(i).getTypicalDuration()));
         }
