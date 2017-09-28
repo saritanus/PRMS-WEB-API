@@ -63,8 +63,22 @@ public class UserService {
     }
 
 
-    public void processDelete(){
+    public void processDelete(int userid){
+        try {
+            System.out.println("In process delete of UserService:"+userid);
+            int a = userid;
+            User user = new User(a);
+            System.out.println("In process delete of UserService after:"+user.getUserId());
+            userdao.delete(user);
+        } catch (NotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+        } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+        } 
 
+        
     }
 
     public void processModify(User user) {

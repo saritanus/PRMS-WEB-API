@@ -115,10 +115,6 @@ public class UserRestService {
 
         return usersList;
     }
-
-	public void deleteUsers(){
-
-	}
         
     @GET
     @Path("/allpresenter")
@@ -163,7 +159,25 @@ public class UserRestService {
         return users;
     }
     
-    
+    /**
+     * DELETE method for deleting an instance of resource
+     * @param userId userId of the resource
+     */
+    @DELETE
+    @Path("/delete/{userid}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void deleteUser(@PathParam("userid") String id) {
+        int userid;  
+        try { 
+             userid = Integer.valueOf(URLDecoder.decode(id, "UTF-8"));
+             System.out.println("In User Delete, userid to be deleted:"+userid );
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace(); 
+            return;
+        }
+        
+        service.processDelete(userid);
+    }   
   
 
 

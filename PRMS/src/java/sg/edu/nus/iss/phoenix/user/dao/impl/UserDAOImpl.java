@@ -247,7 +247,7 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public void delete(User valueObject) throws NotFoundException, SQLException {
 
-        String sql = "DELETE FROM user WHERE (id = ? ) ";
+        String sql = "DELETE FROM user WHERE (userid = ? ) ";
         PreparedStatement stmt = null;
 
         try {
