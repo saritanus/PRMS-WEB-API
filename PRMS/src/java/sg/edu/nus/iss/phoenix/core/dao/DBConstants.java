@@ -19,6 +19,8 @@ public class DBConstants {
     public static final String u_name = "name";
     public static final String u_password = "password";
     public static final String u_role ="role";
+    public static final String u_emailId = "emailId";
+    public static final String u_joiningDate = "joiningDate";
 
     //roles table field names
     public static final String r_role = "role";

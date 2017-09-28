@@ -41,6 +41,12 @@ public class User implements Cloneable, Serializable {
           this.name = nameIn;
 
     }
+    
+    public User (int userIdIn) {
+        
+        this.userId = userIdIn;
+        
+    }
 
     public User (int userIdIn, String nameIn, String passwordIn, String emailIDIn, Date joiningDateIn) {
           this.userId = userIdIn;
@@ -67,6 +73,12 @@ public class User implements Cloneable, Serializable {
         this.roleId = roleId;
     }
 
+    public User(int userIdIn, String nameIn, String emailIDIn, Date joiningDateIn) {
+        this.userId = userIdIn;
+        this.name = nameIn;
+        this.emailID = emailIDIn;
+        this.joiningDate = joiningDateIn;
+    }
 
     /** 
      * Get- and Set-methods for persistent variables. The default
