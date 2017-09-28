@@ -127,7 +127,8 @@ public class UserDAOImpl implements UserDAO {
 		System.out.println("record size"+searchResults.size());
 		return searchResults;
 	}
-        @Override
+        
+    @Override
 	public List<User> loadAllProducers() throws SQLException {
 		openConnection();
 		String sql = "SELECT u.userid,name FROM phoenixft04.user AS u JOIN phoenixft04.`user-role` as ur ON u.userid=ur.userId Join phoenixft04.role AS r ON r.roleId=ur.roleId  where r.role='producer' ORDER BY `name` ASC; ";
@@ -203,39 +204,38 @@ public class UserDAOImpl implements UserDAO {
         }    
     }
 
-   	/* (non-Javadoc)
-	 * @see sg.edu.nus.iss.phoenix.user.dao.impl.UserDAO#save(sg.edu.nus.iss.phoenix.user.entity.User)
-	 */
-	@Override
-	public void save(User valueObject) throws NotFoundException,
+    /* (non-Javadoc)
+         * @see sg.edu.nus.iss.phoenix.user.dao.impl.UserDAO#save(sg.edu.nus.iss.phoenix.user.entity.User)
+     */
+    @Override
+    public void save(User valueObject) throws NotFoundException,
 			SQLException {
 
-		String sql = "UPDATE user SET `name`=?, `emailId` = ? WHERE (`userid` = ? ); ";
-		PreparedStatement stmt = null;
-		openConnection();
-		try {
-			stmt = connection.prepareStatement(sql);
-                        stmt.setString(1, valueObject.getName());
-			stmt.setString(2, valueObject.getEmailID());
-			stmt.setInt(3, valueObject.getUserId());
-
-			int rowcount = databaseUpdate(stmt);
-			if (rowcount == 0) {
-				// System.out.println("Object could not be saved! (PrimaryKey not found)");
-				throw new NotFoundException(
-						"Object could not be saved! (PrimaryKey not found)");
-			}
-			if (rowcount > 1) {
-				// System.out.println("PrimaryKey Error when updating DB! (Many objects were affected!)");
-				throw new SQLException(
-						"PrimaryKey Error when updating DB! (Many objects were affected!)");
-			}
-		} finally {
-			if (stmt != null)
-				stmt.close();
-			closeConnection();
-		}
-	}
+	String sql = "UPDATE user SET `name`=?, `emailId` = ? WHERE (`userid` = ? ); ";
+	PreparedStatement stmt = null;
+	openConnection();
+	try {
+            stmt = connection.prepareStatement(sql);
+            stmt.setString(1, valueObject.getName());
+            stmt.setString(2, valueObject.getEmailID());
+            stmt.setInt(3, valueObject.getUserId());
+            int rowcount = databaseUpdate(stmt);
+            if (rowcount == 0) {
+		// System.out.println("Object could not be saved! (PrimaryKey not found)");
+		throw new NotFoundException(
+                        "Object could not be saved! (PrimaryKey not found)");
+            }
+            if (rowcount > 1) {
+                // System.out.println("PrimaryKey Error when updating DB! (Many objects were affected!)");
+                throw new SQLException(
+			"PrimaryKey Error when updating DB! (Many objects were affected!)");
+            }
+	} finally {
+            if (stmt != null)
+            stmt.close();
+            closeConnection();
+    }
+}
 
     /*
 	 * (non-Javadoc)
@@ -246,12 +246,31 @@ public class UserDAOImpl implements UserDAO {
      */
     @Override
     public void delete(User valueObject) throws NotFoundException, SQLException {
-
-        String sql = "DELETE FROM user WHERE (userid = ? ) ";
+        
+        
+        //Deleting User-Role entries
+        String ursql = "DELETE FROM `user-role` WHERE (userid = ? ) ";
         PreparedStatement stmt = null;
-
         try {
-            stmt = this.connection.prepareStatement(sql);
+            stmt = this.connection.prepareStatement(ursql);
+            stmt.setInt(1, valueObject.getUserId());
+
+            int rowcount = databaseUpdate(stmt);
+            if (rowcount == 0) {
+                // System.out.println("Object could not be deleted (PrimaryKey not found)");
+                throw new NotFoundException(
+                        "Object could not be deleted! (PrimaryKey not found)");
+            }
+        } finally {
+            if (stmt != null) {
+                stmt.close();
+            }
+        }
+        
+        //Deleting User entry
+        String usql = "DELETE FROM user WHERE (userid = ? ) ";
+        try {
+            stmt = this.connection.prepareStatement(usql);
             stmt.setInt(1, valueObject.getUserId());
 
             int rowcount = databaseUpdate(stmt);
@@ -269,7 +288,8 @@ public class UserDAOImpl implements UserDAO {
             if (stmt != null) {
                 stmt.close();
             }
-        }
+        }      
+        
     }
 
     /*
