@@ -6,7 +6,7 @@ public class DBConstants {
 	public static final String COM_MYSQL_JDBC_DRIVER = "com.mysql.jdbc.Driver";
 	public static final String dbUrl = "jdbc:mysql://localhost:3306/phoenixft04";
 	public static final String dbUserName = "root";
-	public static final String dbPassword = "admin";
+	public static final String dbPassword = "root";
 	 
 	//Not yet refactored!!!!!!!!!!!!!!!!!!!
 	
