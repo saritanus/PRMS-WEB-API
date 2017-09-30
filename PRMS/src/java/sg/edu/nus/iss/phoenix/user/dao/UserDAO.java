@@ -110,6 +110,17 @@ public interface UserDAO {
 	 */
 	public abstract void save(User valueObject)
 			throws NotFoundException, SQLException;
+/**
+	 * updaterole-method. This will assign the role to the corresponding use
+         * update the user-role table by mapping userid to roleid. 
+	 * @param valueObject
+	 *            This parameter contains the class instance to be created. If
+	 *            automatic surrogate-keys are not used the Primary-key field
+	 *            must be set for this to work properly.
+     * @throws java.sql.SQLException
+	 */
+        public abstract void updaterole(User valueObject) 
+                        throws SQLException;
 
 	/**
 	 * delete-method. This method will remove the information from database as

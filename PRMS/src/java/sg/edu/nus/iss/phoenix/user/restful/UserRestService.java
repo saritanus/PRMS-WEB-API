@@ -93,6 +93,20 @@ public class UserRestService {
     }
     
     /**
+     * POST method for updating or creating an instance of resource
+     * @param content representation for the resource
+     */
+    @POST
+    @Path("/updaterole")
+    @Consumes(MediaType.APPLICATION_JSON)
+    //@Consumes("application/json")
+    @Produces("application/json")
+    public void updateRole(User usr) {
+        System.out.println("UserRestService in Update Role:"+usr);
+        service.updateUserRole(usr);
+    }
+    
+    /**
      * Retrieves representation of an instance of resource
      * @return an instance of resource
      */

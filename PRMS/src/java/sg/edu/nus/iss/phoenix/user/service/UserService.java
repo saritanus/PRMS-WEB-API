@@ -62,7 +62,17 @@ public class UserService {
             return newID;
     }
 
-
+    
+    public void assignUserRole(User usr) {
+        try {
+            System.out.println("in UserService");
+            userdao.assignrole(usr);
+        } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+        }
+    }
+    
     public void processDelete(int userid){
         try {
             System.out.println("In process delete of UserService:"+userid);
@@ -92,14 +102,15 @@ public class UserService {
             e.printStackTrace();
 	}
     }
-    
-    public void assignUserRole(User usr) {
+
+    public void updateUserRole(User usr) {
         try {
-            System.out.println("in UserService");
-            userdao.assignrole(usr);
+            System.out.println("in UserService in updateUserRole");
+            userdao.updaterole(usr);
         } catch (SQLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
         }
     }
+
 }//end UserService

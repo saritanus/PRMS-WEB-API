@@ -250,9 +250,65 @@ public class UserDAOImpl implements UserDAO {
             if (stmt != null)
             stmt.close();
             closeConnection();
+        }
     }
-}
 
+    
+    @Override
+    public synchronized void updaterole(User valueObject) throws SQLException {
+            
+        String sql = "";
+        PreparedStatement stmt =null;
+        System.out.println("in updaterole");
+        System.out.println("Checking if entries wrt to user id exist");
+        
+        //Deleting the exisitng list for user-role mapping
+        String ursql = "DELETE FROM `user-role` WHERE (userid = ? ) ";
+        try {
+            stmt = this.connection.prepareStatement(ursql);
+            stmt.setInt(1, valueObject.getUserId());
+            int rowcount = databaseUpdate(stmt);
+            if (rowcount == 0) {
+                // System.out.println("Object could not be deleted (PrimaryKey not found)");
+                throw new NotFoundException(
+                        "Object could not be deleted! (PrimaryKey not found)");
+            }
+        } catch (NotFoundException ex) {
+            Logger.getLogger(UserDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (stmt != null) {
+                stmt.close();
+            }
+        }
+        
+        //Assinging the new mapping
+        
+        int i = 0;
+        System.out.println("data from front"+valueObject.getUserId());
+        int size = valueObject.getRoleId().size();
+        System.out.println("got the size"+size);
+        while ( i < size){
+             try {
+                    stmt = null;
+                    sql = "INSERT INTO `user-role` VALUES (?, ?) ";
+                    stmt = this.connection.prepareStatement(sql);                   
+                    stmt.setInt(1, valueObject.getUserId());
+                    stmt.setInt(2, valueObject.getRoleId().get(i));
+                    i++;
+                    int rowcount = databaseUpdate(stmt);
+                    if (rowcount != 1) {
+                    throw new SQLException("PrimaryKey Error when updating DB!");
+            }
+            } finally {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            }
+        }    
+    }    
+    
+    
+    
     /*
 	 * (non-Javadoc)
 	 * 
@@ -264,24 +320,24 @@ public class UserDAOImpl implements UserDAO {
     public void delete(User valueObject) throws NotFoundException, SQLException {
         
         
-        //Deleting User-Role entries
+//        //Deleting User-Role entries
         String ursql = "DELETE FROM `user-role` WHERE (userid = ? ) ";
         PreparedStatement stmt = null;
-        try {
-            stmt = this.connection.prepareStatement(ursql);
-            stmt.setInt(1, valueObject.getUserId());
-
-            int rowcount = databaseUpdate(stmt);
-            if (rowcount == 0) {
-                // System.out.println("Object could not be deleted (PrimaryKey not found)");
-                throw new NotFoundException(
-                        "Object could not be deleted! (PrimaryKey not found)");
-            }
-        } finally {
-            if (stmt != null) {
-                stmt.close();
-            }
-        }
+//        try {
+//            stmt = this.connection.prepareStatement(ursql);
+//            stmt.setInt(1, valueObject.getUserId());
+//
+//            int rowcount = databaseUpdate(stmt);
+//            if (rowcount == 0) {
+//                // System.out.println("Object could not be deleted (PrimaryKey not found)");
+//                throw new NotFoundException(
+//                        "Object could not be deleted! (PrimaryKey not found)");
+//            }
+//        } finally {
+//            if (stmt != null) {
+//                stmt.close();
+//            }
+//        }
         
         //Deleting User entry
         String usql = "DELETE FROM user WHERE (userid = ? ) ";
