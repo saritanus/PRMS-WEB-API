@@ -108,6 +108,32 @@ public class UserDAOImpl implements UserDAO {
             }
         }
     }
+    
+    /*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * sg.edu.nus.iss.phoenix.authenticate.dao.impl.UserDao#load(java.sql.Connection
+	 * , sg.edu.nus.iss.phoenix.authenticate.entity.User)
+     */
+    //@Override
+    public ArrayList<String> loadrole(User valueObject) throws NotFoundException, SQLException {
+
+        String sql = "SELECT r.role FROM phoenixft04.`user-role` ur , `role` r , `user` u where ( u.name = ? ) and u.userid = ur.userId and ur.roleId= r.roleId";
+        PreparedStatement stmttest = this.connection.prepareStatement(sql);
+	stmttest.setString(1, valueObject.getName());
+	ArrayList<String> getroles = new ArrayList();
+        try (ResultSet roleresult = stmttest.executeQuery()) {
+           while (roleresult.next())   {
+                   String role;
+                   role = roleresult.getString(1);
+                   System.out.println("Printing the role retrieved"+role);
+                   getroles.add(role);
+                }
+            }
+        return getroles;
+        }
+      
     /*
 	 * (non-Javadoc)
 	 * 
@@ -572,13 +598,27 @@ public class UserDAOImpl implements UserDAO {
                 temp.setName(result.getString("name"));
                 temp.setEmailID(result.getString("emailId"));
                 temp.setJoiningDate(result.getDate("joiningDate"));
-               // temp.setRoles(createRoles(result.getString("role")));
-                //Role e = new Role(result.getString("role"));
-                //ArrayList<Role> roles = new ArrayList<Role>();
-                //roles.add(e);
-                //temp.setRoles(roles);
-
+                
+                String rolesql = "SELECT r.roleId,r.role FROM phoenixft04.`user-role` ur , `role` r where (ur.userid = ? ) and ur.roleId= r.roleId";
+		PreparedStatement stmttest = this.connection.prepareStatement(rolesql);
+		stmttest.setInt(1, temp.getUserId());
+		ArrayList<Role> getroles = new ArrayList<>();
+               // getroles = null;
+                try (ResultSet roleresult = stmttest.executeQuery()) {
+                    
+                    while (roleresult.next())   {
+                        
+                        Role role = new Role();
+                        role.setRoleId(roleresult.getInt(1));
+                        System.out.println("RoleID:"+role.getRoleId());
+                        role.setRole(roleresult.getString(2));
+                        System.out.println("Role:"+role.getRole());
+                        getroles.add(role);
+                    }
+                }
+                temp.setRoles(getroles);
                 searchResults.add(temp);
+                System.out.println("User mapped:"+searchResults);
             }
 
         } finally {
@@ -600,12 +640,6 @@ public class UserDAOImpl implements UserDAO {
                 System.out.println("printing temp value:"+temp.getUserId());
                 //temp.setPassword(result.getString("password"));
                 temp.setName(result.getString("name"));
-               // temp.setRoles(createRoles(result.getString("role")));
-                //Role e = new Role(result.getString("role"));
-                //ArrayList<Role> roles = new ArrayList<Role>();
-                //roles.add(e);
-                //temp.setRoles(roles);
-
                 searchResults.add(temp);
             }
 

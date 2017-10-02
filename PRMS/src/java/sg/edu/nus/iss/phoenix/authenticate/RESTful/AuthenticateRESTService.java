@@ -5,6 +5,10 @@
  */
 package sg.edu.nus.iss.phoenix.authenticate.RESTful;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Consumes;
@@ -19,6 +23,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import sg.edu.nus.iss.phoenix.user.entity.User;
 import sg.edu.nus.iss.phoenix.authenticate.service.AuthenticateService;
+import sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException;
+import sg.edu.nus.iss.phoenix.user.dao.impl.UserDAOImpl;
 
 /**
  * REST Web Service
@@ -28,6 +34,8 @@ import sg.edu.nus.iss.phoenix.authenticate.service.AuthenticateService;
 @Path("/Login")
 @RequestScoped
 public class AuthenticateRESTService {
+    
+    UserDAOImpl userdao = new UserDAOImpl();
 
     @Context
     private UriInfo context;
@@ -48,14 +56,19 @@ public class AuthenticateRESTService {
     // Produces JSON as response
     @Produces(MediaType.APPLICATION_JSON) 
     public AuthInfo doLogin(@QueryParam("username") String uname, 
-            @QueryParam("password") String pwd){
+            @QueryParam("password") String pwd) throws NotFoundException, SQLException{
         AuthInfo response = new AuthInfo();
         response.setUsername(uname);
+        User user = new User(uname);
+        System.out.println("Printing user inside role retrieve"+user);
+        ArrayList<String> getrole = userdao.loadrole(user);
+        response.setRolelist(getrole);
         if(checkCredentials(uname, pwd)){
                 response.setAuthStatus(true);
         }else{
                 response.setAuthStatus(false);	
         }
+        System.out.println("Printing the user details"+response);
         return response;		
     }
 	

@@ -55,6 +55,14 @@ public class User implements Cloneable, Serializable {
           this.emailID = emailIDIn;
           this.joiningDate = joiningDateIn;
     }
+    
+        public User (int userIdIn, String nameIn, String emailIDIn, Date joiningDateIn, List<Role> roleIn) {
+          this.userId = userIdIn;
+          this.name = nameIn;
+          this.emailID = emailIDIn;
+          this.joiningDate = joiningDateIn;
+          this.listRoles = roleIn;
+    }
 
     public User(int userId, String name, String password) {
           this.userId = userId;
