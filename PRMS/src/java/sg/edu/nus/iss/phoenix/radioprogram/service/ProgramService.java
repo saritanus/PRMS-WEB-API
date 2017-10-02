@@ -7,6 +7,13 @@ import sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException;
 import sg.edu.nus.iss.phoenix.radioprogram.dao.ProgramDAO;
 import sg.edu.nus.iss.phoenix.radioprogram.entity.RadioProgram;
 
+/**
+ * @author Boon Kui
+ * @version 1.1
+ * @updatedBy Sarita  Sethy
+ * @Description This service class contains all the method invocation for radio program use case
+ */
+
 public class ProgramService {
 	DAOFactoryImpl factory;
 	ProgramDAO rpdao;
@@ -48,6 +55,19 @@ public class ProgramService {
 		try {
 			currentrp = ((ArrayList<RadioProgram>) rpdao
 					.searchMatching(currentrp)).get(0);
+			return currentrp;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return currentrp;
+
+	}
+        public RadioProgram findRPID(int rpId) throws NotFoundException {
+		RadioProgram currentrp = new RadioProgram(rpId);
+		
+		try {
+			rpdao.load(currentrp);
 			return currentrp;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
