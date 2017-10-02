@@ -120,11 +120,12 @@ public class UserRestService {
         usersList.setUserList(new ArrayList<User>());
         
         for (int i = 0; i < userlist.size(); i++) {
-            usersList.getUserList().add(
-                new User(userlist.get(i).getUserId(),
-                        userlist.get(i).getName(),
-                        userlist.get(i).getEmailID(),
-                        userlist.get(i).getJoiningDate()));
+            usersList.getUserList().add (
+                  new User(userlist.get(i).getUserId(),
+                           userlist.get(i).getName(),
+                           userlist.get(i).getEmailID(),
+                           userlist.get(i).getJoiningDate(),
+                           userlist.get(i).getRoles()));
         }
 
         return usersList;
