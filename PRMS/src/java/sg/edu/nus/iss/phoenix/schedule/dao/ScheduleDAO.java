@@ -1,5 +1,6 @@
 package sg.edu.nus.iss.phoenix.schedule.dao;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 import sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException;
@@ -65,7 +66,7 @@ public interface ScheduleDAO {
                          * @return 
                         * @throws java.sql.SQLException
 	 */
-	public abstract List<ProgramSlot> loadAll() throws SQLException;
+	public abstract List<ProgramSlot> loadAll(String startTime, String endTime) throws SQLException;
         
                     /**
 	 * create-method. This will create new row in database according to supplied
@@ -99,11 +100,11 @@ public interface ScheduleDAO {
 	 */
 	public abstract void save(ProgramSlot valueObject)
 			throws NotFoundException, SQLException;	
+
+	public boolean isProgramSlotAssigned(String startDateTime) throws SQLException;
+
+	public boolean isScheduleOverlaps(String startDate,String duration)  throws SQLException;
 /*
-	public boolean isProgramSlotAssigned() throws SQLException;
-
-	public void isScheduleOverlaps() throws SQLException;
-
 	public void modifyProgramSlot() throws SQLException;
 
 	public abstract void retrieveAllWeeklySchedules() throws SQLException;

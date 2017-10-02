@@ -1,23 +1,28 @@
 package sg.edu.nus.iss.phoenix.schedule.dao.impl;
 
 import java.sql.Connection;
-import java.sql.Date;
+
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.sql.Date;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import sg.edu.nus.iss.phoenix.core.dao.DBConstants;
 import sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException;
+import sg.edu.nus.iss.phoenix.core.util.PhoenixUtil;
 import sg.edu.nus.iss.phoenix.radioprogram.entity.RadioProgram;
+import sg.edu.nus.iss.phoenix.radioprogram.service.ProgramService;
 import sg.edu.nus.iss.phoenix.schedule.entity.ProgramSlot;
 import sg.edu.nus.iss.phoenix.schedule.dao.ScheduleDAO;
 import sg.edu.nus.iss.phoenix.user.entity.User;
+import sg.edu.nus.iss.phoenix.user.service.UserService;
 
 /**
- * @author boonkui
+ * @author Sarita Sethy
  * @version 1.0
  * @created 18-Sep-2017 10:56:45 PM
  */
@@ -33,27 +38,41 @@ public class ScheduleDAOImpl implements ScheduleDAO {
         public ScheduleDAOImpl(){
 
         }
-
+        /**
+         * createValueObject-method. This method creates and returns a instance of ProgramSlot class. 
+         * @return 
+         */
         public ProgramSlot createValueObject() {
                 return new ProgramSlot();
         }
-        
+        /**
+         * getObject-method. This method creates an instance of ProgramSlot using the unique id.
+         * @param id
+         * @return
+         * @throws NotFoundException
+         * @throws SQLException 
+         */
         public ProgramSlot getObject(int id) throws NotFoundException, SQLException {
                     ProgramSlot valueObject = createValueObject();
                     valueObject.setId(id);
                     load(valueObject);
                     return valueObject;
          }
-
+        
+        /**
+         * load-method. This methods returns the schedule details of a selected schedule.
+         * @param valueObject
+         * @throws NotFoundException
+         * @throws SQLException 
+         */
             @Override
             public void load(ProgramSlot valueObject) throws NotFoundException, SQLException {
-           
+
                 if (valueObject.getId()== 0) {
-                // System.out.println("Can not select without Primary-Key!");
                 throw new NotFoundException("Can not select without Primary-Key!");
                }
 
-                String sql = "SELECT * FROM `program-slot` WHERE (`id` = ? ); ";
+                String sql = "SELECT * FROM `program-slot` WHERE (`scheduleId` = ? ); ";
                 PreparedStatement stmt = null;
                 openConnection();
                 try {
@@ -67,19 +86,193 @@ public class ScheduleDAOImpl implements ScheduleDAO {
                         closeConnection();
                 }
         }
-
+        /**
+         * loadAll-method. This method returns all the schedules available on selected dates 
+         * @return
+         * @throws SQLException 
+         */
             @Override
-            public List<ProgramSlot> loadAll() throws SQLException {
+            public List<ProgramSlot> loadAll(String startTime,String endTime) throws SQLException{
                 openConnection();
-		String sql = "SELECT * FROM `program-slot` ; ";
-		List<ProgramSlot> searchResults = listQuery(connection
-				.prepareStatement(sql));
-		closeConnection();
-		System.out.println("record size"+searchResults.size());
-		return searchResults;
+                String sql = null;
+                if(startTime == null)
+                {
+                    sql= " SELECT * FROM `program-slot` ; ";
+                }
+                else
+                {
+                    sql = "select * from `program-slot` where date(startTime) "
+                            + "between date('"+startTime+"') and date('"+endTime+"'); ";
+                }
+                List<ProgramSlot> searchResults = null;
+                try {
+                
+                searchResults = listQuery(connection.prepareStatement(sql));
+                closeConnection();
+                System.out.println("record size"+searchResults.size());
+              
+            } catch (NotFoundException ex) {
+                Logger.getLogger(ScheduleDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                  return searchResults;
+            }
+            /**
+             * isProgramSlotAssigned-method. This method checks if a program slot is assigned or not on this time.
+             * @param startDateTime
+             * @return
+             * @throws SQLException 
+             */
+@Override
+public boolean isProgramSlotAssigned(String startDateTime) throws SQLException {
+    
+    String sql = "select count(*) cnt from `program-slot` where date_format('"
+                  +startDateTime+"', '%Y-%m-%d %H:%i') between date_format(startTime, '%Y-%m-%d %H:%i') and date_format(endTime, '%Y-%m-%d %H:%i');";
+    PreparedStatement stmt = null;
+    openConnection();
+    ResultSet result = null;
+    boolean isAssigned = false;
+    try{
+        stmt = connection.prepareStatement(sql);
+        result = stmt.executeQuery();
+        int noSlot = 0;
+        if (result.next()) 
+        {
+            noSlot =  result.getInt("cnt");
+        }
+        if(noSlot>0)
+            isAssigned =true;
+    } finally {
+			if (stmt != null)
+				stmt.close();
+			closeConnection();
+		}
+
+return isAssigned;
+}
+/**
+ * isScheduleOverlaps-method. This method checks if any program slot is overlapping in any existing program 
+ * @param programSlot
+ * @return
+ * @throws SQLException 
+ */
+ @Override
+public boolean isScheduleOverlaps(String startDate,String duration) throws SQLException {
+    
+   
+    PreparedStatement stmt = null;
+    openConnection();
+    ResultSet result = null;
+    boolean isOverlap = false;
+    try{
+        String sql = "SELECT count(*) cnt FROM phoenixft04.`program-slot` where "+
+                      "addtime(date_format('"+startDate+"', '%Y-%m-%d %H:%i'),time('"+duration+
+                      "'))  between "+
+                      "date_format(startTime, '%Y-%m-%d %H:%i') and  date_format(endTime, '%Y-%m-%d %H:%i');";
+                   
+        stmt = connection.prepareStatement(sql);
+        result = stmt.executeQuery();
+        int noSlot = 0;
+        if (result.next()) 
+        {
+            noSlot =  result.getInt("cnt");
+        }
+        if(noSlot>0)
+            isOverlap =true;
+    } finally {
+			if (stmt != null)
+				stmt.close();
+			closeConnection();
+		}
+
+return isOverlap;
+}
+
+public boolean isYearExist(ProgramSlot programSlot) throws SQLException {    
+   
+    PreparedStatement stmt = null;
+    openConnection();
+    ResultSet result = null;
+    boolean isYearExist = false;
+    try{
+        String sql = "SELECT count(*) cnt FROM `annual-schedule` where yearNo=year("
+                +PhoenixUtil.dateFormatter.format(programSlot.getStartTime())+");";
+                   
+        stmt = connection.prepareStatement(sql);
+        result = stmt.executeQuery();
+        int noSlot = 0;
+        if (result.next()) 
+        {
+            noSlot =  result.getInt("cnt");
+        }
+        if(noSlot>0)
+            isYearExist =true;
+        else
+        {
+            sql = "insert into `annual-schedule` (yearNo) " +"values (year("
+                +PhoenixUtil.dateFormatter.format(programSlot.getStartTime())+");";
+            stmt = connection.prepareStatement(sql);
+            int rowcount = databaseUpdate(stmt);
+            if (rowcount != 1) {
+                    throw new SQLException("PrimaryKey Error when updating DB!");
+            }
+        }
+           
+    } finally {
+			if (stmt != null)
+				stmt.close();
+			closeConnection();
+		}
+
+return isYearExist;
+}
+public boolean isWeekExist(ProgramSlot programSlot) throws SQLException {
+    
+   PreparedStatement stmt = null;
+    openConnection();
+    ResultSet result = null;
+    boolean isWeekExist = false;
+    try{
+        String sql = "SELECT count(ws.weekId) FROM `weekly-schedule` ws , `annual-schedule` ans" +
+                    " where ans.yearNo =year("+PhoenixUtil.dateFormatter.format(programSlot.getStartTime())
+                    + ")+and ws.annualId = ans.annualId and ws.sequence =week("+PhoenixUtil.dateFormatter.format(programSlot.getStartTime())+");";
+                   
+        stmt = connection.prepareStatement(sql);
+        result = stmt.executeQuery();
+        int noWeek = 0;
+        if (result.next()) 
+        {
+            noWeek =  result.getInt("cnt");
+        }
+        if(noWeek>0)
+            isWeekExist =true;
+        else
+        {
+            sql = "SELECT annualId cnt FROM `annual-schedule` where yearNo=year("
+                +PhoenixUtil.dateFormatter.format(programSlot.getStartTime())+");";
+            int annualId=0;
+             if (result.next()) 
+            {
+                annualId =  result.getInt("annualId");
+             }
+            sql = "insert into `weekly-schedule` (sequence, annualId) values (week("
+                +PhoenixUtil.dateFormatter.format(programSlot.getStartTime())+","+annualId+");";
+            stmt = connection.prepareStatement(sql);
+            int rowcount = databaseUpdate(stmt);
+            if (rowcount != 1) {
+                    throw new SQLException("PrimaryKey Error when updating DB!");
+            }
+        }
+           
+    } finally {
+			if (stmt != null)
+				stmt.close();
+			closeConnection();
+		}
+
+return isWeekExist;
 }
             
-            /**
+         /**
 	 * databaseUpdate-method. This method is a helper method for internal use.
 	 * It will execute all database handling that will change the information in
 	 * tables. SELECT queries will not be executed here however. The return
@@ -88,19 +281,19 @@ public class ScheduleDAOImpl implements ScheduleDAO {
 	 * 
 	 * @param stmt
 	 *            This parameter contains the SQL statement to be excuted.
-     * @return 
-     * @throws java.sql.SQLException
+         * @return 
+         * @throws java.sql.SQLException
 	 */
 	protected int databaseUpdate(PreparedStatement stmt) throws SQLException {
 
 		int result = stmt.executeUpdate();
-                //ResultSet rs = stmt.getGeneratedKeys();
-              //  if (rs.next()) {
-                 //   result = rs.getInt(1);
-              //  }
-		return result;
+                return result;
 	}
-
+        /**
+         * create-method. This methods create a new records in the table program-slot.
+         * @param valueObject
+         * @throws SQLException 
+         */
             @Override
             public void create(ProgramSlot valueObject) throws SQLException {              
                 
@@ -108,33 +301,42 @@ public class ScheduleDAOImpl implements ScheduleDAO {
 		PreparedStatement stmt = null;
 		openConnection();
                 try {
-			sql = "INSERT INTO `program-slot` "
+                        isYearExist(valueObject)  ;  
+                        isWeekExist(valueObject);
+                        sql = "INSERT INTO `program-slot` "
                                 + "(`duration`, `startTime`,`weekId`, `presenterId`, "
                                 + "`producerId`,`dateOfProgram`, `programId`,) "
                                 + "VALUES (?,?,?); ";
 			stmt = connection.prepareStatement(sql);
 			stmt.setTime(1, valueObject.getDuration());
-			stmt.setDate(2, (Date) valueObject.getStartTime());
+			stmt.setDate(2, (java.sql.Date) (Date) valueObject.getStartTime());
 			stmt.setInt(3, valueObject.getWeekId());
                         stmt.setInt(4,valueObject.getPresenter().getUserId());
                         stmt.setInt(5,valueObject.getProducer().getUserId());
-                        stmt.setDate(6, (Date) valueObject.getEndTime());
+                        stmt.setDate(6, (java.sql.Date) (Date) valueObject.getEndTime());
                         stmt.setInt(7,valueObject.getRadioProgram().getRadioId());
                         
 			int rowcount = databaseUpdate(stmt);
 			if (rowcount != 1) {
-				// System.out.println("PrimaryKey Error when updating DB!");
 				throw new SQLException("PrimaryKey Error when updating DB!");
 			}
-
-		} finally {
+ 
+                            }                      
+                    
+		finally {
 			if (stmt != null)
 				stmt.close();
 			closeConnection();
 		}
             }
 
-        @Override
+       /**
+        * save-method. This method updates the values of program slot.
+        * @param valueObject
+        * @throws NotFoundException
+        * @throws SQLException 
+        */            
+         @Override
         public void save(ProgramSlot valueObject) throws NotFoundException, SQLException {
             String sql = "UPDATE `program-slot` "
                     + "SET `duration`=?,`startTime`=?,`weekId`=?,`presenterId`=?,"
@@ -154,12 +356,10 @@ public class ScheduleDAOImpl implements ScheduleDAO {
 
 			int rowcount = databaseUpdate(stmt);
 			if (rowcount == 0) {
-				// System.out.println("Object could not be saved! (PrimaryKey not found)");
 				throw new NotFoundException(
 						"Object could not be saved! (PrimaryKey not found)");
 			}
 			if (rowcount > 1) {
-				// System.out.println("PrimaryKey Error when updating DB! (Many objects were affected!)");
 				throw new SQLException(
 						"PrimaryKey Error when updating DB! (Many objects were affected!)");
 			}
@@ -169,17 +369,11 @@ public class ScheduleDAOImpl implements ScheduleDAO {
 			closeConnection();
 		}
   }
+
+
+
+
 /*
-@Override
-public boolean isProgramSlotAssigned() throws SQLException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-}
-
-@Override
-public void isScheduleOverlaps() throws SQLException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-}
-
 @Override
 public void modifyProgramSlot() throws SQLException {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -249,7 +443,6 @@ protected void singleQuery(PreparedStatement stmt, ProgramSlot valueObject)
                         valueObject.setStartTime(result.getDate("dateOfProgram"));
 
                 } else {
-                        // System.out.println("RadioProgram Object Not Found!");
                         throw new NotFoundException("ProgramSlot Object Not Found!");
                 }
         } finally {
@@ -272,35 +465,37 @@ protected void singleQuery(PreparedStatement stmt, ProgramSlot valueObject)
 * @return 
 * @throws java.sql.SQLException
  */
-protected List<ProgramSlot> listQuery(PreparedStatement stmt) throws SQLException {
+protected List<ProgramSlot> listQuery(PreparedStatement stmt) throws SQLException, NotFoundException {
 
         ArrayList<ProgramSlot> searchResults = new ArrayList<>();
         ResultSet result = null;
-        openConnection();
+        UserService uService = new UserService();
+        ProgramService pService = new ProgramService();
+        //openConnection();
         try {
                 result = stmt.executeQuery();
 
                 while (result.next()) {
-                        ProgramSlot temp = createValueObject();
-                        temp.setId(result.getInt("id"));
-                        temp.setDuration(result.getTime("duration"));
-                        temp.setStartTime(result.getDate("startTime"));
-                        temp.setWeekId(result.getInt("weekId"));                        
-                        temp.setStartTime(result.getDate("endTime"));
-                        if(result.getInt("presenterId")!=0)
+                        ProgramSlot temp = new ProgramSlot();
+                        temp.setId(result.getInt(DBConstants.s_scheduleId));
+                        temp.setDuration(result.getTime(DBConstants.s_duration));
+                        temp.setStartTime(result.getDate(DBConstants.s_startTime));
+                        temp.setWeekId(result.getInt(DBConstants.s_weekId));                        
+                        temp.setEndTime(result.getDate(DBConstants.s_endTime));
+                        int tempId = result.getInt(DBConstants.s_presenterId);
+                        if(tempId!=0)
                         {
-                            User presenter = new User();
-                            temp.setPresenter(presenter);
+                           temp.setPresenter(uService.findUser(tempId));
                         }
-                        if(result.getInt("producerId")!=0)
+                        tempId = result.getInt(DBConstants.s_producerId);
+                        if(tempId!=0)
                         {
-                            User producer = new User();
-                            temp.setPresenter(producer);
+                             temp.setProducer(uService.findUser(tempId));
                         }
-                        if(result.getInt("programId")!=0)
+                        tempId=result.getInt(DBConstants.s_programId); 
+                        if(tempId!=0)
                         {
-                            RadioProgram radioProgram = new RadioProgram();
-                            temp.setRadioProgram(radioProgram);
+                           temp.setRadioProgram(pService.findRPID(tempId));
                         }
                         searchResults.add(temp);
                 }
@@ -320,7 +515,6 @@ protected List<ProgramSlot> listQuery(PreparedStatement stmt) throws SQLExceptio
         try {
                 Class.forName(DBConstants.COM_MYSQL_JDBC_DRIVER);
         } catch (ClassNotFoundException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
         }
 
@@ -328,8 +522,7 @@ protected List<ProgramSlot> listQuery(PreparedStatement stmt) throws SQLExceptio
                 this.connection = DriverManager.getConnection(DBConstants.dbUrl,
                                 DBConstants.dbUserName, DBConstants.dbPassword);
         } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                 e.printStackTrace();
         }
 
 }
@@ -338,7 +531,6 @@ private void closeConnection() {
         try {
                 this.connection.close();
         } catch (SQLException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
         }
 }

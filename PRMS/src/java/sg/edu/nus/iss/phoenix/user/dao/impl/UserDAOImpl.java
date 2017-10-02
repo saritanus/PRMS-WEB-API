@@ -94,12 +94,12 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public void loadUser(User valueObject) throws NotFoundException, SQLException {
 
-        String sql = "SELECT * FROM user WHERE (name = ?) ";
+        String sql = "SELECT * FROM user WHERE (userid = ?) ";
         PreparedStatement stmt = null;
 
         try {
             stmt = this.connection.prepareStatement(sql);
-            stmt.setString(1, valueObject.getName());
+            stmt.setInt(1, valueObject.getUserId());
             singleQuery(stmt, valueObject);
 
         } finally {
@@ -136,7 +136,7 @@ public class UserDAOImpl implements UserDAO {
 	public List<User> loadAllPresenters() throws SQLException {
                 System.out.println("In UserDAOImpl");
 		openConnection();
-		String sql = "SELECT u.userid,name FROM phoenixft04.user AS u JOIN phoenixft04.`user-role` as ur ON u.userid=ur.userId Join phoenixft04.role AS r ON r.roleId=ur.roleId  where r.role='presenter' ORDER BY `name` ASC; ";
+		String sql = "SELECT u.userid,name FROM   user AS u JOIN   `user-role` as ur ON u.userid=ur.userId Join   role AS r ON r.roleId=ur.roleId  where r.role='presenter' ORDER BY `name` ASC; ";
 		List<User> searchResults = listQueryName(connection
 				.prepareStatement(sql));
 		closeConnection();
@@ -147,7 +147,7 @@ public class UserDAOImpl implements UserDAO {
     @Override
 	public List<User> loadAllProducers() throws SQLException {
 		openConnection();
-		String sql = "SELECT u.userid,name FROM phoenixft04.user AS u JOIN phoenixft04.`user-role` as ur ON u.userid=ur.userId Join phoenixft04.role AS r ON r.roleId=ur.roleId  where r.role='producer' ORDER BY `name` ASC; ";
+		String sql = "SELECT u.userid,name FROM   user AS u JOIN   `user-role` as ur ON u.userid=ur.userId Join   role AS r ON r.roleId=ur.roleId  where r.role='producer' ORDER BY `name` ASC; ";
 		List<User> searchResults = listQueryName(connection
 				.prepareStatement(sql));
 		closeConnection();
@@ -533,7 +533,6 @@ public class UserDAOImpl implements UserDAO {
                 valueObject.setUserId(result.getInt("userid"));
                 valueObject.setPassword(result.getString("password"));
                 valueObject.setName(result.getString("name"));
-                
                 DAOFactoryImpl factory = new DAOFactoryImpl();
                 RoleDAO roleDAO = factory.getRoleDAO();
                 List roles =roleDAO.loadUserRole(valueObject);

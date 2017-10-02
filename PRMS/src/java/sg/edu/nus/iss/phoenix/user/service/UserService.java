@@ -30,7 +30,12 @@ public class UserService {
 	return currentList;   
     }
         
-
+    public User findUser(int userId) throws SQLException, NotFoundException {
+        User user = new User(userId);
+        System.out.println("In findUser");
+        userdao.loadUser(user); // TODO Auto-generated catch block
+	return user;
+    }
     public ArrayList<User> findAllProducers() throws SQLException {
         ArrayList<User> currentList = new ArrayList<User>();
         System.out.println("In findAllProducers");

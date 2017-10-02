@@ -1,5 +1,6 @@
 package sg.edu.nus.iss.phoenix.schedule.entity;
 
+import java.io.Serializable;
 import java.sql.Time;
 import java.util.Date;
 import sg.edu.nus.iss.phoenix.radioprogram.entity.RadioProgram;
@@ -10,18 +11,9 @@ import sg.edu.nus.iss.phoenix.user.entity.User;
  * @author Sarita
  * @created 20-Sep-2017 1:02:59 AM
  */
-public final class ProgramSlot {
-
-    public ProgramSlot() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-         public void finalize() throws Throwable {
-
-	}
-	public void ProgramSlot(){
-
-	}
+public final class ProgramSlot implements Cloneable, Serializable{
+public ProgramSlot() {
+     }
         private int id;
         private Time duration;
    	private Date endTime;	
@@ -30,6 +22,8 @@ public final class ProgramSlot {
         private User presenter = new User();
         private User producer = new User();
 	public RadioProgram radioProgram = new RadioProgram();
+
+    
 
     public void setId(int id) {
         this.id = id;
