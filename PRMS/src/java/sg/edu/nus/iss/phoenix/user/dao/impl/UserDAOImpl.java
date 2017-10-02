@@ -108,6 +108,32 @@ public class UserDAOImpl implements UserDAO {
             }
         }
     }
+    
+    /*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * sg.edu.nus.iss.phoenix.authenticate.dao.impl.UserDao#load(java.sql.Connection
+	 * , sg.edu.nus.iss.phoenix.authenticate.entity.User)
+     */
+    //@Override
+    public ArrayList<String> loadrole(User valueObject) throws NotFoundException, SQLException {
+
+        String sql = "SELECT r.role FROM phoenixft04.`user-role` ur , `role` r , `user` u where ( u.name = ? ) and u.userid = ur.userId and ur.roleId= r.roleId";
+        PreparedStatement stmttest = this.connection.prepareStatement(sql);
+	stmttest.setString(1, valueObject.getName());
+	ArrayList<String> getroles = new ArrayList();
+        try (ResultSet roleresult = stmttest.executeQuery()) {
+           while (roleresult.next())   {
+                   String role;
+                   role = roleresult.getString(1);
+                   System.out.println("Printing the role retrieved"+role);
+                   getroles.add(role);
+                }
+            }
+        return getroles;
+        }
+      
     /*
 	 * (non-Javadoc)
 	 * 

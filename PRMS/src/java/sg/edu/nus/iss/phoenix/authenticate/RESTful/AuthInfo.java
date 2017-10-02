@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package sg.edu.nus.iss.phoenix.authenticate.RESTful;
+import java.util.ArrayList;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -15,6 +16,7 @@ public class AuthInfo {
    private String username;
     private boolean authStatus;
     private String role;
+    ArrayList<String> roleList = new ArrayList();
     
     public String getUsername() {
         return username;
@@ -22,9 +24,7 @@ public class AuthInfo {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    
+    } 
 
     public boolean isAuthStatus() {
         return authStatus;
@@ -34,14 +34,20 @@ public class AuthInfo {
         this.authStatus = authStatus;
     }
 
-    
-
     public String getRole() {
         return role;
     }
 
     public void setRole(String role) {
         this.role = role;
+    }
+    
+    public ArrayList<String> getRolelist() {
+        return roleList;
+    }
+    
+    public void setRolelist(ArrayList<String> roleListIn) {
+        this.roleList = roleListIn;
     }
   
 }
