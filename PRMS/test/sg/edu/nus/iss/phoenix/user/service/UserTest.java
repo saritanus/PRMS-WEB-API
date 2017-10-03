@@ -29,7 +29,7 @@ public class UserTest extends TestCase {
     //Test Fixtures
     String name_expected;
     String name_actual;
-    ArrayList<User> userListActual=new ArrayList<User>();
+    ArrayList<User> userListActual;
 	User user1=new User(1,"srishti","test");
         User user2=new User(3,"sujit","abc");
         User user3=new User(4,"gautam","gtest");
@@ -60,7 +60,7 @@ public class UserTest extends TestCase {
         and presenters resp in database */
         
 	@Test
-	public void testUserSerive() throws SQLException {
+	public void testUserSerive() throws SQLException{
             
         userListActual=service.findAllUsers();
 		//assertSame(4,us.processCreate(u1));

@@ -13,13 +13,16 @@ import static junit.framework.TestCase.assertSame;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import static org.mockito.Matchers.any;
 import org.mockito.Mock;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 import sg.edu.nus.iss.phoenix.user.dao.RoleDAO;
 import sg.edu.nus.iss.phoenix.user.entity.Role;
+import sg.edu.nus.iss.phoenix.user.entity.User;
 
 /**
  *
@@ -27,6 +30,7 @@ import sg.edu.nus.iss.phoenix.user.entity.Role;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class RoleTestMock {
+    Role roletest=new Role("preseneter");
      @Mock
      RoleDAO roledao;
     @Before
@@ -40,7 +44,7 @@ public void testRoleCountAll() throws SQLException  {
         //  create mock
         RoleDAO test = mock(RoleDAO.class);
 
-        // define return value for method getUniqueId()
+        // define return value for method 
         when(test.countAll()).thenReturn(4);
 
         // use mock in test....
@@ -56,7 +60,7 @@ public void testRoleSearchMatching() throws SQLException  {
         RoleDAO test = mock(RoleDAO.class);
         
 
-        // define return value for method getUniqueId()
+        // define return value for method 
         when(test.searchMatching("presenter")).thenReturn(role);
 
         // use mock in test....
@@ -76,7 +80,7 @@ public void testRoleLoadAll() throws SQLException  {
             roleList.add(role1);
             roleList.add(role1);
 
-        // define return value for method getUniqueId()
+        // define return value for method 
         when(test.loadAll()).thenReturn(roleList);
         
 
@@ -84,6 +88,12 @@ public void testRoleLoadAll() throws SQLException  {
         assertEquals(test.loadAll(), roleList);
         assertSame(test.loadAll().size(),3);
 }
+//Testing  processCreate method using doThrow method:stubbing void method with exception        
+@Test(expected=Exception.class)
+	public void testProcessCreate() throws SQLException {
+		doThrow(new SQLException()).when(roledao).create(any(Role.class));
+		roledao.create(roletest);
+	}
 
     
     
