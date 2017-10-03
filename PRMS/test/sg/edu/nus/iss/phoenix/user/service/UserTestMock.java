@@ -18,7 +18,9 @@ import static junit.framework.TestCase.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import static org.mockito.Matchers.any;
 import org.mockito.Mock;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
@@ -27,17 +29,14 @@ import sg.edu.nus.iss.phoenix.user.dao.UserDAO;
 import sg.edu.nus.iss.phoenix.user.entity.User;
 
 
-/**
- *
- * @author Srishti Bhargava
- */
-
 @RunWith(MockitoJUnitRunner.class)
 //To test UserService class
 public class UserTestMock {
-  
+     User userTest=new User(1,"sari","test");
      @Mock
      UserDAO userdao;
+     @Mock
+     UserService mockedUserService;
     @Before
     //initialize a mock object using Mockito
     public void setup(){
@@ -52,7 +51,7 @@ public class UserTestMock {
         //  create mock
         UserDAO test = mock(UserDAO.class);
 
-        // define return value for method getUniqueId()
+        // define return value for method 
         when(test.countAll()).thenReturn(8);
 
         // use mock in test....
@@ -64,6 +63,7 @@ public class UserTestMock {
 @Test
 public void testUserLoadAll() throws SQLException  {
         //  create mock
+        
         User user1=new User(1,"srishti","test");
         User user2=new User(3,"sujit","abc");
         User user3=new User(4,"gautam","gtest");
@@ -73,7 +73,7 @@ public void testUserLoadAll() throws SQLException  {
             userList.add(user2);
             userList.add(user3);
 
-        // define return value for method getUniqueId()
+        // define return value for method loadAll()
         when(test.loadAll()).thenReturn(userList);
 
         // use mock in test....
@@ -89,12 +89,29 @@ public void testUserSearchMatching() throws SQLException  {
         UserDAO test = mock(UserDAO.class);
         
 
-        // define return value for method getUniqueId()
+        // define return value for method 
         when(test.searchMatching("srishti","test")).thenReturn(user1);
 
         // use mock in test....
         assertEquals(test.searchMatching("srishti","test"), user1);
 }
-
+//Testing  processDelete method using doThrow method:stubbing void method with exception 
+@Test(expected=Exception.class)
+	public void testProcessDelete() {
+		doThrow(new SQLException()).when(mockedUserService).processDelete(any(Integer.class));
+		mockedUserService.processDelete(1);
+	}
+ //Testing  processCreate method using doThrow method:stubbing void method with exception        
+@Test(expected=Exception.class)
+	public void testProcessCreate() {
+		doThrow(new SQLException()).when(mockedUserService).processCreate(any(User.class));
+		mockedUserService.processCreate(userTest);
+	}
+ //Testing  processModify method using doThrow method:stubbing void method with exception  
+@Test(expected=Exception.class)
+	public void testProcessModify() {
+		doThrow(new SQLException()).when(mockedUserService).processModify(any(User.class));
+		mockedUserService.processModify(userTest);
+	}
 
 }
