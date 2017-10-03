@@ -110,6 +110,11 @@ public interface ScheduleDAO {
 	public abstract void retrieveAllWeeklySchedules() throws SQLException;
 
 	public abstract void retrieveAnnualSchedule() throws SQLException;*/
+
+        public void modify(ProgramSlot programSlot);
+        public abstract void delete(ProgramSlot valueObject)
+			throws NotFoundException, SQLException;
+
         
                       /**
 	 * searchMatching-Method. This method provides searching capability to get

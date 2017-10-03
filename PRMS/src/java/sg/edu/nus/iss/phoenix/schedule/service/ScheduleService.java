@@ -77,29 +77,23 @@ public class ScheduleService {
 		}
                 return isAssigned;
 	}
-/*
-	public void processCopy(ProgramSlot programSlot1,ProgramSlot programSlot2){
-            try {
-			scheduleDAO.copy(programSlot1,programSlot2);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
-	
-	
+         
         public void processModify(ProgramSlot programSlot)
-        {try {
-            scheduleDAO.modify(programSlot);
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } // TODO Auto-generated catch block
+        {
+           try {
+				scheduleDAO.save(programSlot);
+			} catch (NotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
-
-	public void processDelete(ProgramSlot programSlot)
+        
+        
+	
+	public void processDelete(ProgramSlot programSlot) throws NotFoundException
         {
             try {
                 
@@ -111,5 +105,7 @@ public class ScheduleService {
             }
 	}
 
-	*/
+	
+
+   
 }//end ScheduleService

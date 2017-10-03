@@ -17,6 +17,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
+import sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException;
 import sg.edu.nus.iss.phoenix.schedule.entity.ProgramSlot;
 import sg.edu.nus.iss.phoenix.schedule.service.ScheduleService;
 
@@ -74,14 +75,16 @@ public class ScheduleRESTService {
     @PUT
     @Path("/create")
     @Consumes(MediaType.APPLICATION_JSON)
-	public void createSchedule(ProgramSlot ps){
-            service.processCreate(ps);
+	public void createSchedule(ProgramSlot programSlot){
+            service.processCreate(programSlot);
 
 	}
      /**
-     * createSchedule-method. This method inserts a record into program-slot table.
-     * @param ps 
-     */
+      * 
+      * @param startDate
+      * @return
+      * @throws ParseException 
+      */
     @GET
     @Path("/checkAssign/{startDate}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -99,7 +102,7 @@ public class ScheduleRESTService {
             return isAssigned;
 
 	}
-/*
+
 	
 @POST
     @Path("/update")
@@ -112,7 +115,7 @@ public class ScheduleRESTService {
     @DELETE
     @Path("/delete/{slot}")
     @Consumes(MediaType.APPLICATION_JSON)
-        public void deleteProgramSlot(@PathParam("slot") ProgramSlot programslot) {
+        public void deleteProgramSlot(@PathParam("slot") ProgramSlot programslot) throws NotFoundException {
         service.processDelete(programslot);
-    }*/
+    }
 }//end ScheduleRESTService
