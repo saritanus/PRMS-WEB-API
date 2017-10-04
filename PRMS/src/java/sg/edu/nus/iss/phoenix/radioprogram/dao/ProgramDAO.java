@@ -158,5 +158,7 @@ public interface ProgramDAO {
 	 */
 	public abstract List<RadioProgram> searchMatching(RadioProgram valueObject)
 			throws SQLException;
+        
+        public abstract int getRPID(String rpName) throws SQLException;
 
 }

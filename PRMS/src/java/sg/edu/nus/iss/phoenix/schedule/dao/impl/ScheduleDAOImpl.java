@@ -7,7 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.sql.Date;
+import java.util.Date;
+
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -100,7 +101,8 @@ public class ScheduleDAOImpl implements ScheduleDAO {
                 }
                 else
                 {
-                    sql = "select * from `program-slot` where date(startTime) "
+                    sql = "SELECT scheduleId,duration,date_format(startTime,'%d-%m-%Y %H:%i') startDate,weekId,presenterId," 
+                            +"producerId,endTime,programId FROM `program-slot` where startDate"
                             + "between date('"+startTime+"') and date('"+endTime+"'); ";
                 }
                 List<ProgramSlot> searchResults = null;
@@ -194,7 +196,7 @@ public boolean isYearExist(ProgramSlot programSlot) throws SQLException {
     boolean isYearExist = false;
     try{
         String sql = "SELECT count(*) cnt FROM `annual-schedule` where yearNo=year('"
-                +PhoenixUtil.dateFormatter.format(programSlot.getStartTime())+"');";
+                +programSlot.getStartTime()+"');";
                    
         stmt = connection.prepareStatement(sql);
         result = stmt.executeQuery();
@@ -207,8 +209,8 @@ public boolean isYearExist(ProgramSlot programSlot) throws SQLException {
             isYearExist =true;
         else
         {
-            sql = "insert into `annual-schedule` (yearNo) " +"values (year("
-                +PhoenixUtil.dateFormatter.format(programSlot.getStartTime())+");";
+            sql = "insert into `annual-schedule` (yearNo) " +"values (year('"
+                +programSlot.getStartTime()+"'));";
             stmt = connection.prepareStatement(sql);
             int rowcount = databaseUpdate(stmt);
             if (rowcount != 1) {
@@ -232,8 +234,8 @@ public boolean isWeekExist(ProgramSlot programSlot) throws SQLException {
     boolean isWeekExist = false;
     try{
         String sql = "SELECT count(ws.weekId) noWeek FROM `weekly-schedule` ws , `annual-schedule` ans" +
-                    " where ans.yearNo =year('"+PhoenixUtil.dateFormatter.format(programSlot.getStartTime())
-                    + "') and ws.annualId = ans.annualId and ws.sequence =week('"+PhoenixUtil.dateFormatter.format(programSlot.getStartTime())+"');";
+                    " where ans.yearNo =year('"+programSlot.getStartTime()
+                    + "') and ws.annualId = ans.annualId and ws.sequence =week('"+programSlot.getStartTime()+"');";
                    
         stmt = connection.prepareStatement(sql);
         result = stmt.executeQuery();
@@ -302,20 +304,41 @@ return isWeekExist;
 		PreparedStatement stmt = null;
 		openConnection();
                 try {
-                        isYearExist(valueObject)  ;  
-                        isWeekExist(valueObject);
+                        //isYearExist(valueObject)  ;  
+                       // isWeekExist(valueObject);
+                        
+                        
+                        int rpId=0;
+                        if(valueObject.getRadioProgram().getName().length()>0)
+                        {
+                            ProgramService ps = new ProgramService();
+                            rpId=ps.findRPName(valueObject.getRadioProgram().getName());
+                        }
+                        UserService us = new UserService();
+                        int presenterId = 0;
+                        if(valueObject.getPresenter().getName().length()>0)
+                        {
+                            presenterId=us.findUserName(valueObject.getPresenter().getName());
+                        }
+                        int producerId = 0;
+                        if(valueObject.getProducer().getName().length()>0)
+                        {
+                             producerId=us.findUserName(valueObject.getProducer().getName());
+                        }
+                        
                         sql = "INSERT INTO `program-slot` "
                                 + "(`duration`, `startTime`,`weekId`, `presenterId`, "
-                                + "`producerId`,`dateOfProgram`, `programId`,) "
-                                + "VALUES (?,?,?); ";
+                                + "`producerId`,`endTime`, `programId`) "
+                                + "VALUES (?,?,?,?,?,?,?); ";
 			stmt = connection.prepareStatement(sql);
-			stmt.setTime(1, valueObject.getDuration());
-			stmt.setDate(2, (java.sql.Date) (Date) valueObject.getStartTime());
-			stmt.setInt(3, valueObject.getWeekId());
-                        stmt.setInt(4,valueObject.getPresenter().getUserId());
-                        stmt.setInt(5,valueObject.getProducer().getUserId());
-                        stmt.setDate(6, (java.sql.Date) (Date) valueObject.getEndTime());
-                        stmt.setInt(7,valueObject.getRadioProgram().getRadioId());
+			stmt.setString(1,valueObject.getDuration());
+                        Date date = new Date();
+			stmt.setString(2,PhoenixUtil.dateTimeFormatter.format(date));
+			stmt.setInt(3, 1);
+                        stmt.setInt(4,presenterId);
+                        stmt.setInt(5,producerId);
+                        stmt.setString(6,PhoenixUtil.dateTimeFormatter.format(date));
+                        stmt.setInt(7,rpId);
                         
 			int rowcount = databaseUpdate(stmt);
 			if (rowcount != 1) {
@@ -323,7 +346,9 @@ return isWeekExist;
 			}
  
                             }                      
-                    
+            catch (NotFoundException ex) {                    
+                Logger.getLogger(ScheduleDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }                    
 		finally {
 			if (stmt != null)
 				stmt.close();
@@ -347,12 +372,12 @@ return isWeekExist;
 		openConnection();
 		try {
 			stmt = connection.prepareStatement(sql);
-                        stmt.setTime(1, valueObject.getDuration());
-			stmt.setDate(2, (Date) valueObject.getStartTime());
+                        stmt.setString(1,valueObject.getDuration());
+			stmt.setString(2,valueObject.getStartTime());
 			stmt.setInt(3, valueObject.getWeekId());
                         stmt.setInt(4,valueObject.getPresenter().getUserId());
                         stmt.setInt(5,valueObject.getProducer().getUserId());
-                        stmt.setDate(6, (Date) valueObject.getEndTime());
+                        stmt.setString(6,valueObject.getEndTime());
                         stmt.setInt(7,valueObject.getRadioProgram().getRadioId());
 			int rowcount = databaseUpdate(stmt);
 			if (rowcount == 0) {
@@ -395,8 +420,8 @@ protected void singleQuery(PreparedStatement stmt, ProgramSlot valueObject)
                 if (result.next()) 
                                                             {						
                         valueObject.setId(result.getInt("id"));
-                        valueObject.setDuration(result.getTime("duration"));
-                        valueObject.setStartTime(result.getDate("startTime"));
+                        valueObject.setDuration(result.getString("duration"));
+                        valueObject.setStartTime(result.getString("startTime"));
                         valueObject.setWeekId(result.getInt("weekId"));
                        // DAOFactory factory = new DAOFactory();
                         if(result.getInt("presenterId")!=0)
@@ -414,7 +439,7 @@ protected void singleQuery(PreparedStatement stmt, ProgramSlot valueObject)
                             RadioProgram radioProgram = new RadioProgram();
                             valueObject.setRadioProgram(radioProgram);
                         }
-                        valueObject.setStartTime(result.getDate("dateOfProgram"));
+                        valueObject.setStartTime(result.getString("dateOfProgram"));
 
                 } else {
                         throw new NotFoundException("ProgramSlot Object Not Found!");
@@ -452,10 +477,10 @@ protected List<ProgramSlot> listQuery(PreparedStatement stmt) throws SQLExceptio
                 while (result.next()) {
                         ProgramSlot temp = new ProgramSlot();
                         temp.setId(result.getInt(DBConstants.s_scheduleId));
-                        temp.setDuration(result.getTime(DBConstants.s_duration));
-                        temp.setStartTime(result.getDate(DBConstants.s_startTime));
+                        temp.setDuration(result.getString(DBConstants.s_duration));
+                        temp.setStartTime(result.getString(DBConstants.s_startTime));
                         temp.setWeekId(result.getInt(DBConstants.s_weekId));                        
-                        temp.setEndTime(result.getDate(DBConstants.s_endTime));
+                        temp.setEndTime(result.getString(DBConstants.s_endTime));
                         int tempId = result.getInt(DBConstants.s_presenterId);
                         if(tempId!=0)
                         {
@@ -482,7 +507,7 @@ protected List<ProgramSlot> listQuery(PreparedStatement stmt) throws SQLExceptio
                 closeConnection();
         }
 
-        return (List<ProgramSlot>) searchResults;
+        return searchResults;
 }
 
    private void openConnection() {

@@ -6,7 +6,7 @@ import java.util.Calendar;
 
 public class PhoenixUtil {
 	
-	public static final DateFormat dateTimeFormatter = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+	public static final DateFormat dateTimeFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	public static final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 	private static int timeHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
 	private static int timeMinute = Calendar.getInstance().get(Calendar.MINUTE);

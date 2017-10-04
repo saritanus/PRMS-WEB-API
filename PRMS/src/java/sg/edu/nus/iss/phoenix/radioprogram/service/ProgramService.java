@@ -89,6 +89,18 @@ public class ProgramService {
 
 	}
         
+        public int findRPName(String rpName) {
+		int rpId = 0;
+		try {
+			rpId =  rpdao.getRPID(rpName);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return rpId;
+
+	}
+        
 	public void processCreate(RadioProgram rp) {
 		try {
 			rpdao.create(rp);

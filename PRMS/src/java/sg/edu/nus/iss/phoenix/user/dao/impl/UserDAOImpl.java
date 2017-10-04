@@ -109,6 +109,27 @@ public class UserDAOImpl implements UserDAO {
         }
     }
     
+    @Override
+    public int getUserId(String userName) throws NotFoundException, SQLException {
+
+        String sql = "SELECT * FROM user WHERE (name = ?) ";
+        PreparedStatement stmt = null;
+        User valueObject = new User();
+        valueObject.setName(userName);
+
+        try {
+            stmt = this.connection.prepareStatement(sql);
+            stmt.setString(1, valueObject.getName());
+            singleQuery(stmt, valueObject);
+
+        } finally {
+            if (stmt != null) {
+                stmt.close();
+            }
+        }
+       return valueObject.getUserId();
+    }
+    
     /*
 	 * (non-Javadoc)
 	 * 
@@ -253,14 +274,15 @@ public class UserDAOImpl implements UserDAO {
     public void save(User valueObject) throws NotFoundException,
 			SQLException {
 
-	String sql = "UPDATE user SET `name`=?, `emailId` = ? WHERE (`userid` = ? ); ";
+	String sql = "UPDATE user SET `emailId`=?, `password`=?, `joiningDate`=? WHERE (`userid` = ? ); ";
 	PreparedStatement stmt = null;
 	openConnection();
 	try {
             stmt = connection.prepareStatement(sql);
-            stmt.setString(1, valueObject.getName());
-            stmt.setString(2, valueObject.getEmailID());
-            stmt.setInt(3, valueObject.getUserId());
+            stmt.setString(1, valueObject.getEmailID());
+            stmt.setString(2, valueObject.getPassword());
+            stmt.setDate(3, valueObject.getJoiningDate());
+            stmt.setInt(4, valueObject.getUserId());
             int rowcount = databaseUpdate(stmt);
             if (rowcount == 0) {
 		// System.out.println("Object could not be saved! (PrimaryKey not found)");

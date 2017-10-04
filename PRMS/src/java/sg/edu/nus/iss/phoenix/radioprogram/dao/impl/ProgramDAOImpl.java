@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import sg.edu.nus.iss.phoenix.core.dao.DBConstants;
 import sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException;
@@ -46,6 +48,29 @@ public class ProgramDAOImpl implements ProgramDAO {
 	/* (non-Javadoc)
 	 * @see sg.edu.nus.iss.phoenix.radioprogram.dao.impl.ProgramDAO#load(sg.edu.nus.iss.phoenix.radioprogram.entity.RadioProgram)
 	 */
+        @Override
+    public int getRPID(String rpName) throws SQLException 
+    {
+                String sql = "SELECT * FROM `radio-program` WHERE (`programName` = ? ); ";
+		PreparedStatement stmt = null;
+                openConnection();
+                RadioProgram valueObject =  new RadioProgram();
+		try {
+                      
+                        valueObject.setName(rpName);
+			stmt = connection.prepareStatement(sql);
+			stmt.setString(1, valueObject.getName());
+			singleQuery(stmt, valueObject);
+
+		} catch (NotFoundException ex) {
+                Logger.getLogger(ProgramDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+			if (stmt != null)
+				stmt.close();
+			closeConnection();
+		} 
+                return valueObject.getRadioId();
+    }
 	@Override
 	public void load(RadioProgram valueObject) throws NotFoundException,
 			SQLException {
@@ -331,8 +356,8 @@ public class ProgramDAOImpl implements ProgramDAO {
 
 				valueObject.setName(result.getString("programName"));
 				valueObject.setDescription(result.getString("description"));
-				valueObject.setTypicalDuration(result
-						.getTime("duration"));
+				valueObject.setTypicalDuration(result.getTime("duration"));
+                                valueObject.setRadioId(result.getInt("programId"));
 
 			} else {
 				// System.out.println("RadioProgram Object Not Found!");
@@ -413,4 +438,6 @@ public class ProgramDAOImpl implements ProgramDAO {
 			e.printStackTrace();
 		}
 	}
+
+    
 }

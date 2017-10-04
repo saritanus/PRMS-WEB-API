@@ -15,9 +15,9 @@ public final class ProgramSlot implements Cloneable, Serializable{
 public ProgramSlot() {
      }
         private int id;
-        private Time duration;
-   	private Date endTime;	
-	private Date startTime;
+        private String duration;
+   	private String endTime;	
+	private String startTime;
         private int weekId;
         private User presenter = new User();
         private User producer = new User();
@@ -31,24 +31,24 @@ public ProgramSlot() {
         public int getId() {
         return id;
     }
-    public void setDuration(Time duration) {
+    public void setDuration(String duration) {
         this.duration = duration;
     }
-    public Time getDuration() {
+    public String getDuration() {
         return duration;
     }
 
-    public void setEndTime(Date endTime) {
+    public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
-       public Date getEndTime() {
+       public String getEndTime() {
         return endTime;
     }
-    public void setStartTime(Date startTime) {
+    public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
-    public Date getStartTime() {
+    public String getStartTime() {
         return startTime;
     }
     public void setWeekId(int weekId) {
@@ -78,7 +78,7 @@ public ProgramSlot() {
     }
     
       
-     public ProgramSlot (int id,Time duration,Date startTime,Date endTime,int weekId,
+     public ProgramSlot (int id,String duration,String startTime,String endTime,int weekId,
                     User presenter,User producer,RadioProgram radioProgram) {
           this.id = id;
           this.duration = duration;
