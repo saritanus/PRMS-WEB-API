@@ -3,14 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-/**
- *
- * @author Srishti Bhargava
- */
+
 package sg.edu.nus.iss.phoenix.user.service;
-
-
-
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -27,6 +21,11 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 import sg.edu.nus.iss.phoenix.user.dao.UserDAO;
 import sg.edu.nus.iss.phoenix.user.entity.User;
+/**
+ * @author Srishti Bhargava
+ * @version 1.0
+ * @created 30-Sep-2017 
+ */
 
 
 @RunWith(MockitoJUnitRunner.class)

@@ -95,9 +95,8 @@ public class ScheduleDAOImpl implements ScheduleDAO {
             public List<ProgramSlot> loadAll(String startTime,String endTime) throws SQLException{
                 openConnection();
                 String sql = null;
-                if(startTime == null)
-                {
-                    sql= " SELECT * FROM `program-slot` ; ";
+                if(startTime.equals("null"))
+                {                    sql= " SELECT * FROM `program-slot` ; ";
                 }
                 else
                 {
@@ -194,8 +193,8 @@ public boolean isYearExist(ProgramSlot programSlot) throws SQLException {
     ResultSet result = null;
     boolean isYearExist = false;
     try{
-        String sql = "SELECT count(*) cnt FROM `annual-schedule` where yearNo=year("
-                +PhoenixUtil.dateFormatter.format(programSlot.getStartTime())+");";
+        String sql = "SELECT count(*) cnt FROM `annual-schedule` where yearNo=year('"
+                +PhoenixUtil.dateFormatter.format(programSlot.getStartTime())+"');";
                    
         stmt = connection.prepareStatement(sql);
         result = stmt.executeQuery();
@@ -232,30 +231,32 @@ public boolean isWeekExist(ProgramSlot programSlot) throws SQLException {
     ResultSet result = null;
     boolean isWeekExist = false;
     try{
-        String sql = "SELECT count(ws.weekId) FROM `weekly-schedule` ws , `annual-schedule` ans" +
-                    " where ans.yearNo =year("+PhoenixUtil.dateFormatter.format(programSlot.getStartTime())
-                    + ")+and ws.annualId = ans.annualId and ws.sequence =week("+PhoenixUtil.dateFormatter.format(programSlot.getStartTime())+");";
+        String sql = "SELECT count(ws.weekId) noWeek FROM `weekly-schedule` ws , `annual-schedule` ans" +
+                    " where ans.yearNo =year('"+PhoenixUtil.dateFormatter.format(programSlot.getStartTime())
+                    + "') and ws.annualId = ans.annualId and ws.sequence =week('"+PhoenixUtil.dateFormatter.format(programSlot.getStartTime())+"');";
                    
         stmt = connection.prepareStatement(sql);
         result = stmt.executeQuery();
         int noWeek = 0;
         if (result.next()) 
         {
-            noWeek =  result.getInt("cnt");
+            noWeek =  result.getInt("noWeek");
         }
         if(noWeek>0)
             isWeekExist =true;
         else
         {
-            sql = "SELECT annualId cnt FROM `annual-schedule` where yearNo=year("
-                +PhoenixUtil.dateFormatter.format(programSlot.getStartTime())+");";
+            sql = "SELECT annualId  FROM `annual-schedule` where yearNo=year('"
+                +PhoenixUtil.dateFormatter.format(programSlot.getStartTime())+"');";
+            stmt = connection.prepareStatement(sql);
+            result = stmt.executeQuery();
             int annualId=0;
              if (result.next()) 
             {
                 annualId =  result.getInt("annualId");
              }
-            sql = "insert into `weekly-schedule` (sequence, annualId) values (week("
-                +PhoenixUtil.dateFormatter.format(programSlot.getStartTime())+","+annualId+");";
+            sql = "insert into `weekly-schedule` (sequence, annualId) values (week('"
+                +PhoenixUtil.dateFormatter.format(programSlot.getStartTime())+"'),"+annualId+");";
             stmt = connection.prepareStatement(sql);
             int rowcount = databaseUpdate(stmt);
             if (rowcount != 1) {
@@ -353,7 +354,6 @@ return isWeekExist;
                         stmt.setInt(5,valueObject.getProducer().getUserId());
                         stmt.setDate(6, (Date) valueObject.getEndTime());
                         stmt.setInt(7,valueObject.getRadioProgram().getRadioId());
-
 			int rowcount = databaseUpdate(stmt);
 			if (rowcount == 0) {
 				throw new NotFoundException(
@@ -369,32 +369,6 @@ return isWeekExist;
 			closeConnection();
 		}
   }
-
-
-
-
-/*
-@Override
-public void modifyProgramSlot() throws SQLException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-}
-
-
-@Override
-public void retrieveAllWeeklySchedules() throws SQLException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-}
-
-@Override
-public void retrieveAnnualSchedule() throws SQLException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-}
-
-@Override
-public List<ProgramSlot> searchMatching(RadioProgram valueObject) throws SQLException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-}
-*/
 /**
  * databaseQuery-method. This method is a helper method for internal use. It
  * will execute all database queries that will return only one row. The
@@ -402,7 +376,7 @@ public List<ProgramSlot> searchMatching(RadioProgram valueObject) throws SQLExce
  * NotFoundException will be thrown.
  * 
  * @param stmt
- *            This parameter contains the SQL statement to be excuted.
+ *            This parameter contains the SQL statement to be executed.
  * @param valueObject
  *            Class-instance where resulting data will be stored.
 * @throws sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException
@@ -544,5 +518,45 @@ private void closeConnection() {
     public List<ProgramSlot> searchMatching(RadioProgram valueObject) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }*/
+    
+    @Override
+	public void delete(ProgramSlot valueObject) throws NotFoundException,
+			SQLException {
+
+		if (valueObject.getId()== 0) {
+			// System.out.println("Can not delete without Primary-Key!");
+			throw new NotFoundException("Can not delete without Primary-Key!");
+		}
+
+		String sql = "DELETE FROM `program-slot` WHERE (`id` = ? ); ";
+		PreparedStatement stmt = null;
+		openConnection();
+		try {
+			stmt = connection.prepareStatement(sql);
+			stmt.setInt(1, valueObject.getId());
+
+			int rowcount = databaseUpdate(stmt);
+			if (rowcount == 0) {
+				// System.out.println("Object could not be deleted (PrimaryKey not found)");
+				throw new NotFoundException(
+						"Object could not be deleted! (PrimaryKey not found)");
+			}
+			if (rowcount > 1) {
+				// System.out.println("PrimaryKey Error when updating DB! (Many objects were deleted!)");
+				throw new SQLException(
+						"PrimaryKey Error when updating DB! (Many objects were deleted!)");
+			}
+		} finally {
+			if (stmt != null)
+				stmt.close();
+			closeConnection();
+		}
+	}
+
+    @Override
+    public void modify(ProgramSlot programSlot) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 
 }//end ScheduleDAOImpl

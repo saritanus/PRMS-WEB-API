@@ -19,8 +19,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import sg.edu.nus.iss.phoenix.radioprogram.entity.RadioProgram;
 import sg.edu.nus.iss.phoenix.radioprogram.service.ProgramService;
 /**
- *
  * @author Srishti Bhargava
+ * @version 1.0
+ * @created 30-Sep-2017 
  */
 @RunWith(MockitoJUnitRunner.class)
 public class ProgramServiceTest {

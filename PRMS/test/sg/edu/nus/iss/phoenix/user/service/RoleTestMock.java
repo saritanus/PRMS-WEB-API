@@ -25,8 +25,9 @@ import sg.edu.nus.iss.phoenix.user.entity.Role;
 import sg.edu.nus.iss.phoenix.user.entity.User;
 
 /**
- *
  * @author Srishti Bhargava
+ * @version 1.0
+ * @created 30-Sep-2017 
  */
 @RunWith(MockitoJUnitRunner.class)
 public class RoleTestMock {

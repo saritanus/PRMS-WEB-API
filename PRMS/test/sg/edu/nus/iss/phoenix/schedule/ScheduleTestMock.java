@@ -4,11 +4,12 @@
  * and open the template in the editor.
  */
 
-/**
- *
- * @author Srishti Bhargava
- */
 package sg.edu.nus.iss.phoenix.schedule;
+/**
+ * @author Srishti Bhargava
+ * @version 1.0
+ * @created 30-Sep-2017 
+ */
 
 
 import java.sql.SQLException;

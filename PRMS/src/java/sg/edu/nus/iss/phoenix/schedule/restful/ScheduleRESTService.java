@@ -111,11 +111,11 @@ public class ScheduleRESTService {
             service.processModify(ps);
 
 	}
-        
+  /*      
     @DELETE
     @Path("/delete/{slot}")
     @Consumes(MediaType.APPLICATION_JSON)
         public void deleteProgramSlot(@PathParam("slot") ProgramSlot programslot) throws NotFoundException {
         service.processDelete(programslot);
-    }
+    }*/
 }//end ScheduleRESTService

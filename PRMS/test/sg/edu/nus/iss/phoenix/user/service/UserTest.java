@@ -3,27 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-/**
- *
- * @author Srishti Bhargava
- */
+
 package sg.edu.nus.iss.phoenix.user.service;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
-import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.junit.After;
-import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
-//import org.mockito.internal.util.collections.Iterables;
-import sg.edu.nus.iss.phoenix.user.dao.impl.UserDAOImpl;
 import sg.edu.nus.iss.phoenix.user.entity.User;
-
+/**
+ * @author Srishti Bhargava
+ * @version 1.0
+ * @created 30-Sep-2017 
+ */
 
 public class UserTest extends TestCase {
     //Test Fixtures
